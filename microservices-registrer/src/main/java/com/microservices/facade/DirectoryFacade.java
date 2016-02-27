@@ -52,6 +52,10 @@ public class DirectoryFacade {
         if(app == null){
             throw new RuntimeException("Can't register a null App");
         }
+        // remove existing app
+        if( directory.getRegisteredApps().contains(app)){
+            directory.getRegisteredApps().remove(app);
+        }
         directory.getRegisteredApps().add(app);
     }
 

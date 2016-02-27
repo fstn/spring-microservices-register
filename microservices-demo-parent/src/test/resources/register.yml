@@ -7,7 +7,7 @@ app:
  instanceID: 1
  endPoints:
       -
-          path: validateInvoice
+          path: validate
           method: POST
 register:
  hostName: 127.0.0.1

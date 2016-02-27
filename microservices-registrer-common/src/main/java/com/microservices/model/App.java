@@ -22,6 +22,12 @@ public class App {
      */
     private String app;
     /**
+     * App context path
+     *
+     * @example /app
+     */
+    private String path;
+    /**
      * Parent app name
      *
      * @example world, fr, eur ..
@@ -110,6 +116,15 @@ public class App {
         this.endPoints = endPoints;
     }
 
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        path = path.startsWith("/") ? path.substring(1) : path;
+        path = path.endsWith("/") ? path.substring(path.length()-1) : path;
+        this.path = path;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -119,27 +134,14 @@ public class App {
         App app1 = (App) o;
 
         if (getApp() != null ? !getApp().equals(app1.getApp()) : app1.getApp() != null) return false;
-        if (getParentApp() != null ? !getParentApp().equals(app1.getParentApp()) : app1.getParentApp() != null)
-            return false;
-        if (getHostName() != null ? !getHostName().equals(app1.getHostName()) : app1.getHostName() != null)
-            return false;
-        if (getStatus() != app1.getStatus()) return false;
-        if (getPort() != null ? !getPort().equals(app1.getPort()) : app1.getPort() != null) return false;
-        if (getInstanceID() != null ? !getInstanceID().equals(app1.getInstanceID()) : app1.getInstanceID() != null)
-            return false;
-        return getEndPoints() != null ? getEndPoints().equals(app1.getEndPoints()) : app1.getEndPoints() == null;
+        return getInstanceID() != null ? getInstanceID().equals(app1.getInstanceID()) : app1.getInstanceID() == null;
 
     }
 
     @Override
     public int hashCode() {
         int result = getApp() != null ? getApp().hashCode() : 0;
-        result = 31 * result + (getParentApp() != null ? getParentApp().hashCode() : 0);
-        result = 31 * result + (getHostName() != null ? getHostName().hashCode() : 0);
-        result = 31 * result + (getStatus() != null ? getStatus().hashCode() : 0);
-        result = 31 * result + (getPort() != null ? getPort().hashCode() : 0);
         result = 31 * result + (getInstanceID() != null ? getInstanceID().hashCode() : 0);
-        result = 31 * result + (getEndPoints() != null ? getEndPoints().hashCode() : 0);
         return result;
     }
 

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by stephen on 27/02/2016.
@@ -31,6 +32,10 @@ public class RegisterUtilService {
 
     @Inject
     private ChildrenWSUtilService childrenWSUtilsService;
+    private List<App> childrenApp;
+    private EndPoint endPoint;
+    private Object param;
+    private GenericType type;
 
     /**
      * Call this to register your service
@@ -101,19 +106,26 @@ public class RegisterUtilService {
      * @param childrenApp
      * @param endPoint
      * @param param
+     * @param type
      * @return
      */
-    public Object executeOnChildren(List<App> childrenApp, EndPoint endPoint, Object param) {
+    public Object executeOnChildren(List<App> childrenApp, EndPoint endPoint, Object param, GenericType type) {
+        this.childrenApp = childrenApp;
+        this.endPoint = endPoint;
+        this.param = param;
+        this.type = type;
         logger.debug("Call child "+childrenApp+", "+endPoint);
         Object result = param;
         for(App app:childrenApp) {
-            ClientResponse response = childrenWSUtilsService.executeOnChildrenWS(app,endPoint,result);
+            // execute only on child that have same endPoints
+            if(app.getEndPoints().contains(endPoint)) {
+                ClientResponse response = childrenWSUtilsService.executeOnChildrenWS(app, endPoint, result);
 
-            if (isOk(response)) {
-                result = response.getEntity(new GenericType<Object>() {
-                });
-            } else {
-                throw new RuntimeException("Unable to execute endPoint on children application " + app.getApp() +" "+endPoint+ " " + response.getStatus());
+                if (isOk(response)) {
+                    result = response.getEntity(type);
+                } else {
+                    throw new RuntimeException("Unable to execute endPoint on children application " + app.getApp() + " " + endPoint + " " + response.getStatus());
+                }
             }
         }
         return result;

@@ -9,7 +9,7 @@
     <packaging>pom</packaging>
 
     <name>spring-microservices</name>
-    <description>client  for microservice registrer</description>
+    <description>client for microservice registrer</description>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -50,22 +50,16 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+
     </dependencies>
 
     <modules>
         <module>microservices-register-client</module>
         <module>microservices-registrer</module>
         <module>microservices-demo-parent</module>
+        <module>microservices-demo-child</module>
         <module>microservices-registrer-common</module>
     </modules>
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </build>
 
 
 </project>

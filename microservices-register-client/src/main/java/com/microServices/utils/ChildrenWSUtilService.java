@@ -28,7 +28,7 @@ public class ChildrenWSUtilService {
 
         WebResource webResource = client
                 .resource("http://" + app.getHostName() + ":"
-                        + app.getPort() + "/" + endPoint.getPath());
+                        + app.getPort() + "/" +app.getPath()+"/"+ endPoint.getPath());
 
         switch (endPoint.getMethod()) {
             case HttpMethod.GET:

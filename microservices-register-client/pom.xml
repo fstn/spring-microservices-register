@@ -17,15 +17,6 @@
     <name>microservices-registrer-client</name>
     <description>client for microservice registrer</description>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </build>
-
     <dependencies>
         <dependency>
             <groupId>com.microservices</groupId>
