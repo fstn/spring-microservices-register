@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/fstn/spring-microservices-register.svg?branch=master)](https://travis-ci.org/fstn/spring-microservices-register)
 # spring-microservices-register
 Microservice register like netflix Eureka
 ## Explanation
