@@ -1,10 +1,15 @@
-package com.microservices.api.rest;
+package com.microServices.api.rest;
 
+import com.microServices.facade.DirectoryFacade;
+import com.microServices.model.App;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import javax.inject.Inject;
 import javax.ws.rs.*;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by SZA on 26/02/2016.
@@ -13,58 +18,76 @@ import javax.ws.rs.*;
 @Path("/apps")
 public class RegisterController {
 
-    private static final Logger LOG = LoggerFactory.getLogger(RegisterController.class);
+    private static final Logger logger = LoggerFactory.getLogger(RegisterController.class);
 
+    @Inject
+    DirectoryFacade directoryFacade;
     /**
      * Register new application instance
      *
-     * @param appID
+     * @param appID application ID
      */
     @POST
-    @Path("{appID}")
+    @Path("/{appID}")
     @Consumes("application/json")
     @Produces("application/json")
-    public void registerApps(@PathParam("appID") Integer appID) {
-
+    public void registerApps(@PathParam("appID") String appID,App app) {
+        logger.info("Register "+app);
+        directoryFacade.register(app);
     }
 
     /**
      * UnRegister application instance
      *
-     * @param appID
+     * @param appID application ID
      */
 
     @DELETE
-    @Path("{appID}/{instanceID}")
+    @Path("/{appID}/{instanceID}")
     @Consumes("application/json")
     @Produces("application/json")
-    public void unRegisterApps(@PathParam ("appID") Integer appID, @PathParam("instanceID") Integer instanceID) {
-
+    public void unRegisterApps(@PathParam ("appID") String appID, @PathParam("instanceID") String instanceID) {
+        logger.info("UnRegister "+appID+":"+appID);
     }
 
     /**
      * Send application instance heartbeat
      *
-     * @param appID
+     * @param appID application ID
+     * @param instanceID instance ID
      */
     @PUT
-    @Path("{appID}")
+    @Path("/{appID}")
     @Consumes("application/json")
     @Produces("application/json")
-    public void heartBeatApps(@PathParam("appID") Integer appID) {
-
+    public void heartBeatApps(@PathParam("appID") String appID, @PathParam("instanceID") String instanceID) {
+        logger.info("HeartBeat "+appID+":"+instanceID);
     }
 
     /**
      * Return application
      *
-     * @param appID
+     * @param appID application ID
      */
     @GET
     @Path("/{appID}")
     @Produces("application/json")
-    public String getApps(@PathParam("appID") Integer appID) {
-        return "ok";
+    public Optional<App> getApps(@PathParam("appID") String appID) {
+        logger.info("Get app  with ID "+appID);
+        return directoryFacade.findRegisteredById(appID);
+
+    }
+    /**
+     * Return application
+     *
+     * @return list of apps
+     */
+    @GET
+    @Path("/")
+    @Produces("application/json")
+    public List<App> getApps() {
+        logger.info("Get all apps ");
+        return directoryFacade.getAllRegistered();
 
     }
 }

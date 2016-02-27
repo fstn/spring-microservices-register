@@ -1,6 +1,6 @@
-package com.microservices;
+package com.microServices;
 
-import com.microservices.model.App;
+import com.microServices.model.App;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

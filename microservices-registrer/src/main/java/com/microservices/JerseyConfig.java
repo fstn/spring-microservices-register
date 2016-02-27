@@ -1,6 +1,6 @@
-package com.microservices;
+package com.microServices;
 
-import com.microservices.api.rest.RegisterController;
+import com.microServices.api.rest.RegisterController;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.springframework.stereotype.Component;
 

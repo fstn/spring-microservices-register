@@ -1,21 +1,27 @@
-package com.microservices;
+package com.microServices;
 
+import com.microServices.model.App;
+import com.microServices.model.Register;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import org.springframework.scheduling.annotation.Scheduled;
 
+import javax.ws.rs.core.MediaType;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class RegisterInit extends Thread {
 
-	private RegistrerConfig register;
+	private App currentApp;
+	private Register register;
 	private boolean registered = false;
 	private static final Logger log = Logger.getLogger(RegistrerConfig.class
 			.getName());
 
-	public RegisterInit(RegistrerConfig register) {
+	public RegisterInit(App currentApp,Register register) {
 		super();
+		this.currentApp = currentApp;
 		this.register = register;
 	}
 
@@ -30,36 +36,30 @@ public class RegisterInit extends Thread {
 			currentTry++;
 			Client client = Client.create();
 
+
 			WebResource webResource = client
-					.resource("http://localhost:8080/RESTfulExample/rest/json/metallica/get");
+					.resource("http://"+register.getHostName()+":"
+							+register.getPort()+"/apps/"+currentApp.getApp());
 
-			ClientResponse response = webResource.accept("application/json")
-					.get(ClientResponse.class);
+			ClientResponse response = webResource
+                    .accept(MediaType.APPLICATION_JSON)
+                    .type(MediaType.APPLICATION_JSON)
+					.post(ClientResponse.class,  currentApp);
 
-			if (response.getStatus() != 200) {
-
-			}
-
-/*
-			RestTemplate restTemplate = new RestTemplate();
-			String context = restTemplate.postForObject(register.getApps().getUrl() + "/"
-					+ register.getApps().getParentName() + "/"
-					+ register.getApps().getParentRegistrerAction(),
-					register.getApps(), String.class);
-			if (! context.equals("ok")) {
+			if (response.getStatus() == 200 || response.getStatus() == 204) {
+				registered = true;
+			}else{
 				try {
 					Thread.sleep(2000);
 				} catch (InterruptedException e) {
-					log.log(Level.SEVERE, "error " + register.getApps());
+					log.log(Level.SEVERE, "error " + currentApp.getApp());
 				}
-			} else {
-				registered = true;
-			}*/
+			}
 		}
 
 		if (!registered) {
 			throw new RuntimeException("Unable to find parent API "
-					+ register.getApps());
+					+ currentApp.getApp());
 		}
 	}
 }
