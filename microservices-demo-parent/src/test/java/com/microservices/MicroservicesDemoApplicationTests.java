@@ -29,7 +29,7 @@ import static org.mockito.Mockito.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = MicroServicesDemoParentApplication.class)
-public class MicroservicesDemoApplicationTests {
+public class MicroServicesDemoApplicationTests {
     @Mock
     private RegisterWSUtilService registerWSUtilService;
 
