@@ -5,3 +5,6 @@ server:
 spring:
  application:
   name: world
+
+config:
+ heartBeatDelay: 1000

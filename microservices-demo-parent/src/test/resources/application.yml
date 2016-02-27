@@ -6,20 +6,5 @@ spring:
  application:
   name: world
 
-app:
- app: world
- parentApp: api
- hostName: 127.0.0.1
- status: STARTING
- port: 8080
- instanceID: 1
- endPoints:
-      -
-          path: validateInvoice
-          method: POST
-      -
-          path: validateTva
-          method: POST
-register:
- hostName: 127.0.0.1
- port: 8092
+config:
+ heartBeatDelay: 1000

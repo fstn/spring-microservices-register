@@ -4,11 +4,11 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class MicroServicesDemoApplication {
+public class MicroServicesDemoParentApplication {
 
 	public static void main(String[] args) {
 
-		SpringApplication.run(MicroServicesDemoApplication.class, args);
+		SpringApplication.run(MicroServicesDemoParentApplication.class, args);
 
 	}
 }

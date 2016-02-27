@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -57,11 +58,12 @@ public class RegisterController {
      * @param instanceID instance ID
      */
     @PUT
-    @Path("/{appID}")
+    @Path("/{appID}/{instanceID}")
     @Consumes("application/json")
     @Produces("application/json")
-    public void heartBeatApps(@PathParam("appID") String appID, @PathParam("instanceID") String instanceID) {
+    public Optional<App> heartBeatApps(@PathParam("appID") String appID, @PathParam("instanceID") String instanceID) {
         logger.info("HeartBeat "+appID+":"+instanceID);
+        return directoryFacade.findRegisteredByIdAndInstanceId(appID,instanceID);
     }
 
     /**
@@ -77,6 +79,21 @@ public class RegisterController {
         return directoryFacade.findRegisteredById(appID);
 
     }
+
+    /**
+     * Return application child endpoints
+     *
+     * @param appID application ID
+     * @param instanceID instance ID
+     */
+    @GET
+    @Path("/{appID}/{instanceID}/children")
+    @Produces("application/json")
+    public List<App> getInstanceChildren(@PathParam("appID") String appID, @PathParam("instanceID") String instanceID) {
+        logger.info("Get children for app  with ID "+appID+":"+instanceID);
+        return directoryFacade.findRegisteredChildrenById(appID);
+    }
+
     /**
      * Return application
      *
