@@ -5,7 +5,7 @@ server:
 spring:
  application:
   name: world
-  
+
 app:
  app: world
  parentApp: api
@@ -15,5 +15,8 @@ app:
  instanceID: 1
  endPoints:
       -
-        path: validateInvoice
-        method: POST
+          path: validateInvoice
+          method: POST
+      -
+          path: validateTva
+          method: POST

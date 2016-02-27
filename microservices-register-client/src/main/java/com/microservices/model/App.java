@@ -5,6 +5,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.HttpMethod;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -15,112 +16,100 @@ import java.util.List;
 @ConfigurationProperties(prefix = "app")
 public class App {
 
-	/**
-	 * App name
-	 *
-	 * @example world, fr, eur ..
-	 */
-	private String app;
-	/**
-	 * Parent app name
-	 *
-	 * @example world, fr, eur ..
-	 */
-	private String parentApp;
-	/**
-	 * Hostname
-	 *
-	 * @example localhost
-	 */
-	private String hostName;
-	/**
-	 * App status
-	 */
-	private StatusType status;
-	/**
-	 * App port
-	 */
-	private Integer port;
-	/**
-	 * App instanceID (use if multiple service deployed with same instanceID)
-	 */
-	private String instanceID;
+    /**
+     * App name
+     *
+     * @example world, fr, eur ..
+     */
+    private String app;
+    /**
+     * Parent app name
+     *
+     * @example world, fr, eur ..
+     */
+    private String parentApp;
+    /**
+     * Hostname
+     *
+     * @example localhost
+     */
+    private String hostName;
+    /**
+     * App status
+     */
+    private StatusType status;
+    /**
+     * App port
+     */
+    private Integer port;
+    /**
+     * App instanceID (use if multiple service deployed with same instanceID)
+     */
+    private String instanceID;
     /**
      * App available endPoints
      */
-    private List<EndPoint> endPoints;
+    private ArrayList<EndPoint> endPoints;
 
-	public App() {
-		super();
-	}
+    public App() {
+        super();
+    }
 
-	public String getApp() {
-		return app;
-	}
+    public String getApp() {
+        return app;
+    }
 
-	public void setApp(String app) {
-		this.app = app;
-	}
+    public void setApp(String app) {
+        this.app = app;
+    }
 
-	public String getParentApp() {
-		return parentApp;
-	}
+    public String getParentApp() {
+        return parentApp;
+    }
 
-	public void setParentApp(String parentApp) {
-		this.parentApp = parentApp;
-	}
+    public void setParentApp(String parentApp) {
+        this.parentApp = parentApp;
+    }
 
-	public String getHostName() {
-		return hostName;
-	}
+    public String getHostName() {
+        return hostName;
+    }
 
-	public void setHostName(String hostName) {
-		this.hostName = hostName;
-	}
+    public void setHostName(String hostName) {
+        this.hostName = hostName;
+    }
 
-	public StatusType getStatus() {
-		return status;
-	}
+    public StatusType getStatus() {
+        return status;
+    }
 
-	public void setStatus(StatusType status) {
-		this.status = status;
-	}
+    public void setStatus(StatusType status) {
+        this.status = status;
+    }
 
-	public Integer getPort() {
-		return port;
-	}
+    public Integer getPort() {
+        return port;
+    }
 
-	public void setPort(Integer port) {
-		this.port = port;
-	}
+    public void setPort(Integer port) {
+        this.port = port;
+    }
 
-	public String getInstanceID() {
-		return instanceID;
-	}
+    public String getInstanceID() {
+        return instanceID;
+    }
 
-	public void setInstanceID(String instanceID) {
-		this.instanceID = instanceID;
-	}
+    public void setInstanceID(String instanceID) {
+        this.instanceID = instanceID;
+    }
 
-	public class EndPoint {
-		private String path;
-		private HttpMethod method;
+    public ArrayList<EndPoint> getEndPoints() {
+        return endPoints;
+    }
 
-		public String getPath() {
-			return path;
-		}
+    public void setEndPoints(ArrayList<EndPoint> endPoints) {
+        this.endPoints = endPoints;
+    }
 
-		public void setPath(String path) {
-			this.path = path;
-		}
-
-		public HttpMethod getMethod() {
-			return method;
-		}
-
-		public void setMethod(HttpMethod method) {
-			this.method = method;
-		}
-	}
 
 }

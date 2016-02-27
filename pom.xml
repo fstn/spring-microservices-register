@@ -39,6 +39,7 @@
     <modules>
         <module>microservices-register-client</module>
         <module>microservices-registrer</module>
+        <module>microservices-demo</module>
     </modules>
     <build>
         <plugins>
