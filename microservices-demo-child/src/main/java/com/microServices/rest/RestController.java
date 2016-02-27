@@ -24,18 +24,18 @@ public class RestController {
     @Inject
     RegisterClient registerClient;
 
-
     @POST
     @Path("validate")
     @Consumes("application/json")
     @Produces("application/json")
     public Entity<Invoice> validate(Entity<Invoice> entity) {
         entity  = (Entity)registerClient.executeOnChildren(new EndPoint("validate", HttpMethod.POST,
-                EndPoint.ExecutePosition.BEFORE),
+                        EndPoint.ExecutePosition.BEFORE),
                 entity,
                 new GenericType<Entity<Invoice>>(){});
-        logger.info("Validate Parent");
-        entity.getData().getDynamicField().put("WWW","www.test.com");
+        logger.info("Validate");
+
+        entity.getData().getDynamicField().put("TVA_INTRACOM",10.5);
         entity = registerClient.addStackCall(entity,new EndPoint("validate", HttpMethod.POST,
                 EndPoint.ExecutePosition.PARENT));
         entity  = (Entity)registerClient.executeOnChildren(new EndPoint("validate", HttpMethod.POST,EndPoint.ExecutePosition.AFTER),
@@ -43,8 +43,6 @@ public class RestController {
                 new GenericType<Entity<Invoice>>(){});
         return entity;
     }
-
-
 
     @GET
     @Path("invoices")
@@ -57,4 +55,5 @@ public class RestController {
                 new GenericType<Invoice>(){});
         return invoice;
     }
+
 }
