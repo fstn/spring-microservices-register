@@ -59,7 +59,8 @@ blabla
         return entity;
     }
 ```
-
+* Configure application.yml and register.yml files
+* Run Spring boot for register and your apps
 
 ## Try demo
 
