@@ -34,7 +34,6 @@ public class RestController {
                 entity,
                 new GenericType<Entity<Invoice>>(){});
         logger.info("Validate");
-
         entity.getData().getDynamicField().put("TVA_INTRACOM",10.5);
         entity = registerClient.addStackCall(entity,new EndPoint("validate", HttpMethod.POST,
                 EndPoint.ExecutePosition.PARENT));
