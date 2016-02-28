@@ -1,0 +1,20 @@
+app:
+ app: world
+ path:  /world/rest
+ parentApp: api
+ hostName: 127.0.0.1
+ status: STARTING
+ port: 8080
+ instanceID: 1
+ endPoints:
+      -
+          path: /validate
+          method: POST
+          executePosition: BEFORE
+      -
+          path: /invoices
+          method: GET
+          executePosition: AFTER
+register:
+ hostName: 127.0.0.1
+ port: 8091
