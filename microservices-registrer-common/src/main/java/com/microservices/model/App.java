@@ -5,38 +5,39 @@ import org.springframework.stereotype.Component;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
- * App representation
+ * App representation yml
  */
 
 @Component
-@ConfigurationProperties(locations = "classpath:register.yml",prefix = "app")
+@ConfigurationProperties(locations = "classpath:register.yml", prefix = "app")
 @XmlRootElement
 public class App {
 
     /**
      * App name
-     *
-     * @example world, fr, eur ..
+     * <p>
+     * Example world, fr, eur ..
      */
     private String app;
     /**
      * App context path
-     *
-     * @example /app
+     * <p>
+     * Example /app
      */
     private String path;
     /**
      * Parent app name
-     *
-     * @example world, fr, eur ..
+     * <p>
+     * Example world, fr, eur ..
      */
     private String parentApp;
     /**
      * Hostname
-     *
-     * @example localhost
+     * <p>
+     * Example localhost
      */
     private String hostName;
     /**
@@ -55,6 +56,10 @@ public class App {
      * App available endPoints
      */
     private ArrayList<EndPoint> endPoints;
+    /**
+     * App last update
+     */
+    private Date lastUpdate;
 
     public App() {
         super();
@@ -122,8 +127,16 @@ public class App {
 
     public void setPath(String path) {
         path = path.startsWith("/") ? path.substring(1) : path;
-        path = path.endsWith("/") ? path.substring(path.length()-1) : path;
+        path = path.endsWith("/") ? path.substring(path.length() - 1) : path;
         this.path = path;
+    }
+
+    public Date getLastUpdate() {
+        return lastUpdate;
+    }
+
+    public void setLastUpdate(Date lastUpdate) {
+        this.lastUpdate = lastUpdate;
     }
 
     @Override
@@ -133,8 +146,7 @@ public class App {
 
         App app1 = (App) o;
 
-        if (getApp() != null ? !getApp().equals(app1.getApp()) : app1.getApp() != null) return false;
-        return getInstanceID() != null ? getInstanceID().equals(app1.getInstanceID()) : app1.getInstanceID() == null;
+        return getApp() != null ? getApp().equals(app1.getApp()) : app1.getApp() == null && (getInstanceID() != null ? getInstanceID().equals(app1.getInstanceID()) : app1.getInstanceID() == null);
 
     }
 

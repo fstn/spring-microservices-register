@@ -1,16 +1,18 @@
 package com.microServices.facade;
 
-import com.microServices.model.Directory;
 import com.microServices.model.App;
+import com.microServices.model.Directory;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
  * Created by stephen on 27/02/2016.
+ * Facade that provide a way to manage directory
  */
 @Component
 public class DirectoryFacade {
@@ -20,8 +22,8 @@ public class DirectoryFacade {
 
     /**
      * find registered app by id
-     * @param appID
-     * @return
+     * @param appID application ID
+     * @return App
      */
     public Optional<App> findRegisteredById(String appID) {
         Optional<App> result;
@@ -30,15 +32,15 @@ public class DirectoryFacade {
             throw new RuntimeException("AppId can't be null to find a App in Directory");
         }
 
-        //TODO modify for multi instance, not return first, we need to implement a loadbalancing way to find instance
-        result = directory.getRegisteredApps().stream().filter(app -> (app.getApp().equals(appID))).findFirst();
+        result = directory.getRegisteredApps().stream().filter(app -> (
+                app.getApp().equals(appID))).findFirst();
 
         return result;
     }
 
     /**
      * Get all registered apps
-     * @return
+     * @return App
      */
     public List<App> getAllRegistered() {
         return directory.getRegisteredApps();
@@ -46,7 +48,7 @@ public class DirectoryFacade {
 
     /**
      * Register an app
-     * @param app
+     * @param app app to register
      */
     public void register(App app) {
         if(app == null){
@@ -56,14 +58,17 @@ public class DirectoryFacade {
         if( directory.getRegisteredApps().contains(app)){
             directory.getRegisteredApps().remove(app);
         }
+        // update heartBeat
+        app.setLastUpdate(new Date());
         directory.getRegisteredApps().add(app);
+
     }
 
     /**
      * Find registered app by using ID and instanceID
-     * @param appID
-     * @param instanceID
-     * @return
+     * @param appID application ID
+     * @param instanceID instance ID
+     * @return App app
      */
     public Optional<App> findRegisteredByIdAndInstanceId(String appID, String instanceID) {
         Optional<App> result;
@@ -72,15 +77,16 @@ public class DirectoryFacade {
             throw new RuntimeException("AppId and instanceID can't be null to find a App in Directory");
         }
         result = directory.getRegisteredApps().stream().
-                filter(app -> (app.getApp().equals(appID) && app.getInstanceID().equals(instanceID))).findFirst();
+                filter(app -> (
+                        app.getApp().equals(appID) && app.getInstanceID().equals(instanceID))).findFirst();
 
         return result;
     }
 
     /**
      * Find children with parent app ID
-     * @param appID
-     * @return
+     * @param appID application ID
+     * @return App app
      */
     public List<App> findRegisteredChildrenById(String appID) {
         List<App> result;
