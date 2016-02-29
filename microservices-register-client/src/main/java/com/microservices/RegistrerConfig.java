@@ -1,6 +1,6 @@
-package com.microServices;
+package com.microservices;
 
-import com.microServices.model.App;
+import com.microservices.model.App;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,22 +22,13 @@ public class RegistrerConfig {
 
 	@PostConstruct
 	public void init() {
-		log.log(Level.SEVERE, "init " + apps.toString());
+		log.log(Level.FINE, "init " + apps.toString());
 
 		childApis = new ArrayList<App>();
-		/*if (!apps.getParentName().equals("")) {
-
-			RegisterInit registerInit = new RegisterInit(this);
-			registerInit.start();
-		}*/
 	}
 
 	@PreDestroy
 	public void destroy() {
-/*
-		RestTemplate restTemplate = new RestTemplate();
-		String result = restTemplate.postForObject(apps.getUrl() + apps.getName()
-				+ "/rest/unRegisterChild", getApps(), String.class);*/
 
 	}
 

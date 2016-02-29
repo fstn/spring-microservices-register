@@ -1,4 +1,4 @@
-package com.microServices.model;
+package com.microservices.model;
 
 import java.util.HashMap;
 import java.util.Map;

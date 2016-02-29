@@ -1,28 +1,30 @@
-package com.microServices.utils;
+package com.microservices.utils;
 
-import com.microServices.RegisterInit;
-import com.microServices.model.App;
-import com.microServices.model.EndPoint;
-import com.microServices.model.Register;
+import com.microservices.RegisterInit;
+import com.microservices.model.App;
+import com.microservices.model.EndPoint;
+import com.microservices.model.Register;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.GenericType;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.type.TypeReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Created by stephen on 27/02/2016.
  */
 @Component
-public class RegisterUtilService {
+public class RegisterUtilService<T> {
     private static final Logger logger = LoggerFactory.getLogger(RegisterUtilService.class);
 
     @Inject
-    public RegisterWSUtilService registerWSUtilsService;
+    public com.microservices.utils.RegisterWSUtilService registerWSUtilsService;
 
     @Inject
     public App currentApp;
@@ -31,7 +33,7 @@ public class RegisterUtilService {
     public Register register;
 
     @Inject
-    private ChildrenWSUtilService childrenWSUtilsService;
+    private ChildrenWSUtilService<T> childrenWSUtilsService;
     private List<App> childrenApp;
     private EndPoint endPoint;
     private Object param;
@@ -106,23 +108,26 @@ public class RegisterUtilService {
      * @param childrenApp
      * @param endPoint
      * @param param
-     * @param type
      * @return
      */
-    public Object executeOnChildren(List<App> childrenApp, EndPoint endPoint, Object param, GenericType type) {
+    public T executeOnChildren(List<App> childrenApp, EndPoint endPoint, T param) {
         this.childrenApp = childrenApp;
         this.endPoint = endPoint;
         this.param = param;
-        this.type = type;
         logger.debug("Call child "+childrenApp+", "+endPoint);
-        Object result = param;
+        T result = param;
         for(App app:childrenApp) {
             // execute only on child that have same endPoints
             if(app.getEndPoints().contains(endPoint)) {
                 ClientResponse response = childrenWSUtilsService.executeOnChildrenWS(app, endPoint, result);
 
                 if (isOk(response)) {
-                    result = response.getEntity(type);
+                    LinkedHashMap<String,Object> genericResult = response.getEntity(new GenericType<LinkedHashMap<String,Object>>(){});
+                    ObjectMapper mapper = new ObjectMapper();
+                    result =
+                            mapper.readValue(genericResult, new TypeReference<result.>(){});
+
+
                 } else {
                     throw new RuntimeException("Unable to execute endPoint on children application " + app.getApp() + " " + endPoint + " " + response.getStatus());
                 }
@@ -134,5 +139,6 @@ public class RegisterUtilService {
     private boolean isOk(ClientResponse response) {
         return response.getStatus() == 200 || response.getStatus() == 204;
     }
+
 
 }

@@ -1,7 +1,7 @@
-package com.microServices.utils;
+package com.microservices.utils;
 
-import com.microServices.model.App;
-import com.microServices.model.EndPoint;
+import com.microservices.model.App;
+import com.microservices.model.EndPoint;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
@@ -16,14 +16,14 @@ import javax.ws.rs.core.MediaType;
  */
 @Component
 @Singleton
-public class ChildrenWSUtilService {
+public class ChildrenWSUtilService<T> {
     /**
      * @param app
      * @param endPoint
      * @param result
      * @return
      */
-    public ClientResponse executeOnChildrenWS(App app, EndPoint endPoint, Object result) {
+    public ClientResponse executeOnChildrenWS(App app, EndPoint endPoint, T result) {
         Client client = Client.create();
 
         WebResource webResource = client

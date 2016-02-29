@@ -1,11 +1,12 @@
-package com.microServices;
+package com.microservices;
 
-import com.microServices.model.App;
-import com.microServices.model.Invoice;
-import com.microServices.model.Register;
-import com.microServices.utils.ChildrenWSUtilService;
-import com.microServices.utils.RegisterUtilService;
-import com.microServices.utils.RegisterWSUtilService;
+import com.microservices.model.App;
+import com.microservices.model.Entity;
+import com.microservices.model.Invoice;
+import com.microservices.model.Register;
+import com.microservices.utils.ChildrenWSUtilService;
+import com.microservices.utils.RegisterUtilService;
+import com.microservices.utils.RegisterWSUtilService;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.GenericType;
 import com.sun.jersey.api.client.WebResource;
@@ -45,13 +46,14 @@ public class MicroServicesDemoApplicationTests {
 
     @Inject
     @InjectMocks
-    private RegisterUtilService registerUtilService;
+    private RegisterUtilService<Entity<Invoice>> registerUtilService;
 
     @Inject
-    private RegisterClient registerClient;
+    private RegisterClient<Entity<Invoice>> registerClient;
 
     private List<App> childrenApps;
     private Invoice invoice;
+    private  Entity<Invoice> invoiceEntity;
     private ClientResponse childrenAppsMockResponse;
     private WebResource webResource;
     private ClientResponse clientResponse;
@@ -69,6 +71,9 @@ public class MicroServicesDemoApplicationTests {
         invoice.setAmount(10.50);
         invoice.setId("1212");
         invoice.setTva(19.6);
+
+        invoiceEntity = new Entity<>();
+        invoiceEntity.setData(invoice);
         childrenAppsMockResponse = mock(ClientResponse.class);
         webResource = mock(WebResource.class);
         WebResource.Builder builder = mock(WebResource.Builder.class);
@@ -82,7 +87,7 @@ public class MicroServicesDemoApplicationTests {
 
         invoiceResponse = mock(ClientResponse.class);
         when(builder.get(ClientResponse.class)).thenReturn(invoiceResponse);
-        when(invoiceResponse.getEntity((GenericType<Invoice>) any())).thenReturn(invoice);
+        when(invoiceResponse.getEntity((GenericType<Entity>) any())).thenReturn(invoiceEntity);
         when(invoiceResponse.getStatus()).thenReturn(200);
         when(webResource.accept(anyString())).thenReturn(builder);
 
@@ -108,12 +113,10 @@ public class MicroServicesDemoApplicationTests {
     @Test
     public void callClient() {
         registerClient.heartBeat();
-        Invoice resultInvoice = (Invoice) registerClient.executeOnChildren(app.getEndPoints().get(0),
-                invoice,
-                new GenericType<Invoice>() {
-                });
+        Entity<Invoice> resultentity =  registerClient.executeOnChildren(app.getEndPoints().get(0),
+                invoiceEntity);
         //il y a 3 enfants à appeler
         verify(childrenWSUtilService.executeOnChildrenWS(any(), any(), any()), times(3));
-        Assert.assertEquals(invoice.getAmount(), resultInvoice.getAmount());
+        Assert.assertEquals(invoice.getAmount(), invoiceEntity.getData().getAmount());
     }
 }

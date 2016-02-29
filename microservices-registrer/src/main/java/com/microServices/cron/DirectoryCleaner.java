@@ -1,7 +1,7 @@
-package com.microServices.cron;
+package com.microservices.cron;
 
-import com.microServices.model.Config;
-import com.microServices.model.Directory;
+import com.microservices.model.Config;
+import com.microservices.model.Directory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 

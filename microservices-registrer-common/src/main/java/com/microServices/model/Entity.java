@@ -1,4 +1,4 @@
-package com.microServices.model;
+package com.microservices.model;
 
 
 import javax.xml.bind.annotation.XmlElement;

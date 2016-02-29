@@ -1,11 +1,11 @@
-package com.microServices;
+package com.microservices;
 
-import com.microServices.cron.DirectoryCleaner;
-import com.microServices.facade.DirectoryFacade;
-import com.microServices.model.App;
-import com.microServices.model.Config;
-import com.microServices.model.Directory;
-import com.microServices.model.EndPoint;
+import com.microservices.cron.DirectoryCleaner;
+import com.microservices.facade.DirectoryFacade;
+import com.microservices.model.App;
+import com.microservices.model.Config;
+import com.microservices.model.Directory;
+import com.microservices.model.EndPoint;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -66,7 +66,7 @@ public class MicroServiceRegisterApplicationTests {
         childApp.setPort(8080);
         childApp.setInstanceID("1");
         ArrayList<EndPoint> endPoints = new ArrayList<>();
-        endPoints.add(new EndPoint("validate", HttpMethod.POST, EndPoint.ExecutePosition.AFTER));
+        endPoints.add(new EndPoint("validate", HttpMethod.POST));
         childApp.setEndPoints(endPoints);
         childApp.setParentApp(parentApp.getApp());
     }

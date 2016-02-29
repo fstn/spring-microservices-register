@@ -1,20 +1,15 @@
-package com.microServices.model;
+package com.microservices.model;
 
 
 /**
  * Created by SZA on 26/02/2016.
  */
 
-import java.util.Enumeration;
-
 /**
  * WebService EndPoint representation
  */
 public class EndPoint {
 
-    public enum  ExecutePosition {
-        BEFORE,AFTER, PARENT;
-    }
     /**
      * EndPoint path
      * @exemple /invoice
@@ -27,21 +22,15 @@ public class EndPoint {
      */
     private String method;
 
-    /**
-     * Allow to choose when call the service
-     */
-    private ExecutePosition executePosition;
 
     public EndPoint() {
         super();
     }
 
-    public EndPoint(String path, String method, ExecutePosition executePosition) {
+    public EndPoint(String path, String method) {
         setPath(path);
-        this.executePosition = executePosition;
         this.method = method;
     }
-
     public String getMethod() {
         return method;
     }
@@ -60,33 +49,22 @@ public class EndPoint {
         this.path = path;
     }
 
-    public ExecutePosition getExecutePosition() {
-        return executePosition;
-    }
-
-    public void setExecutePosition(ExecutePosition executePosition) {
-        this.executePosition = executePosition;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof EndPoint)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
 
         EndPoint endPoint = (EndPoint) o;
 
-        if (getPath() != null ? !getPath().equals(endPoint.getPath()) : endPoint.getPath() != null) return false;
-        if (getMethod() != null ? !getMethod().equals(endPoint.getMethod()) : endPoint.getMethod() != null)
-            return false;
-        return getExecutePosition() == endPoint.getExecutePosition();
+        if (path != null ? !path.equals(endPoint.path) : endPoint.path != null) return false;
+        return method != null ? method.equals(endPoint.method) : endPoint.method == null;
 
     }
 
     @Override
     public int hashCode() {
-        int result = getPath() != null ? getPath().hashCode() : 0;
-        result = 31 * result + (getMethod() != null ? getMethod().hashCode() : 0);
-        result = 31 * result + (getExecutePosition() != null ? getExecutePosition().hashCode() : 0);
+        int result = path != null ? path.hashCode() : 0;
+        result = 31 * result + (method != null ? method.hashCode() : 0);
         return result;
     }
 
@@ -95,7 +73,6 @@ public class EndPoint {
         return "EndPoint{" +
                 "path='" + path + '\'' +
                 ", method='" + method + '\'' +
-                ", executePosition=" + executePosition +
                 '}';
     }
 }

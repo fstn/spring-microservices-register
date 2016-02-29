@@ -1,7 +1,7 @@
-package com.microServices;
+package com.microservices;
 
-import com.microServices.model.App;
-import com.microServices.model.Register;
+import com.microservices.model.App;
+import com.microservices.model.Register;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;

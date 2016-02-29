@@ -46,22 +46,14 @@ Return result:
     @Consumes("application/json")
     @Produces("application/json")
     public Entity<Invoice> validate(Entity<Invoice> entity) {
-/**
- CALL BEFORE CHILDREN
-**/
-        entity  = (Entity)registerClient.executeOnChildren(new EndPoint("validate", HttpMethod.POST, EndPoint.ExecutePosition.BEFORE),entity,new GenericType<Entity<Invoice>>(){});
-/**
- DO SOMETHING
-blabla
-**/
-        entity = registerClient.addStackCall(entity,new EndPoint("validate",HttpMethod.POST,EndPoint.ExecutePosition.PARENT));
-
-/**
- CALL AFTER CHILDREN
-**/
-        entity  = (Entity)registerClient.executeOnChildren(new EndPoint("validate", HttpMethod.POST,EndPoint.ExecutePosition.AFTER),entity,new GenericType<Entity<Invoice>>(){});
+  entity = new RestRegisterHelper<Entity<Invoice>>(registerClient){
+            @Override
+            public Entity run(Entity<Invoice> entity) {
+                /////////////////////////// DO SOMETHING ///////////////////////////
+                return entity;
+            }
+        }.execute(entity);
         return entity;
-    }
 ```
 * Configure application.yml and register.yml files
 * Run Spring boot for register and your apps
@@ -105,20 +97,17 @@ POST http://{parent host}:{parent port}/{parent context path}/validate
         "endPoints": [
           {
             "path": "validate",
-            "method": "POST",
-            "executePosition": "BEFORE"
+            "method": "POST"
           },
           {
             "path": "invoices",
-            "method": "GET",
-            "executePosition": "AFTER"
+            "method": "GET"
           }
         ]
       },
       "endPoint": {
         "path": "validate",
-        "method": "POST",
-        "executePosition": "PARENT"
+        "method": "POST"
       }
     },
     {
@@ -133,20 +122,17 @@ POST http://{parent host}:{parent port}/{parent context path}/validate
         "endPoints": [
           {
             "path": "validate",
-            "method": "POST",
-            "executePosition": "BEFORE"
+            "method": "POST"
           },
           {
             "path": "invoices",
-            "method": "GET",
-            "executePosition": "AFTER"
+            "method": "GET"
           }
         ]
       },
       "endPoint": {
         "path": "validate",
-        "method": "POST",
-        "executePosition": "PARENT"
+        "method": "POST"
       }
     }
   ],

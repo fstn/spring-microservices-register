@@ -1,14 +1,13 @@
-package com.microServices.api.rest;
+package com.microservices.api.rest;
 
-import com.microServices.facade.DirectoryFacade;
-import com.microServices.model.App;
+import com.microservices.facade.DirectoryFacade;
+import com.microservices.model.App;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 

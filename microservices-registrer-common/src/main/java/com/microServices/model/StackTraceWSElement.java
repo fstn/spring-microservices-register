@@ -1,4 +1,4 @@
-package com.microServices.model;
+package com.microservices.model;
 
 /**
  * Created by stephen on 27/02/2016.

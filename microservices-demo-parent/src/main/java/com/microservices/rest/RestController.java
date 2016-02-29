@@ -1,16 +1,18 @@
-package com.microServices.rest;
+package com.microservices.rest;
 
-import com.microServices.RegisterClient;
-import com.microServices.model.EndPoint;
-import com.microServices.model.Entity;
-import com.microServices.model.Invoice;
-import com.sun.jersey.api.client.GenericType;
+import com.microservices.RegisterClient;
+import com.microservices.RestRegisterHelper;
+import com.microservices.model.Entity;
+import com.microservices.model.Invoice;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 
 /**
  * Created by stephen on 27/02/2016.
@@ -22,7 +24,7 @@ public class RestController {
     private static final Logger logger = LoggerFactory.getLogger(RestController.class);
 
     @Inject
-    RegisterClient registerClient;
+    RegisterClient<Entity<Invoice>> registerClient;
 
 
     @POST
@@ -30,22 +32,20 @@ public class RestController {
     @Consumes("application/json")
     @Produces("application/json")
     public Entity<Invoice> validate(Entity<Invoice> entity) {
-        entity  = (Entity)registerClient.executeOnChildren(new EndPoint("validate", HttpMethod.POST,
-                EndPoint.ExecutePosition.BEFORE),
-                entity,
-                new GenericType<Entity<Invoice>>(){});
-        logger.info("Validate Parent");
-        entity.getData().getDynamicField().put("WWW","www.test.com");
-        entity = registerClient.addStackCall(entity,new EndPoint("validate", HttpMethod.POST,
-                EndPoint.ExecutePosition.PARENT));
-        entity  = (Entity)registerClient.executeOnChildren(new EndPoint("validate", HttpMethod.POST,EndPoint.ExecutePosition.AFTER),
-                entity,
-                new GenericType<Entity<Invoice>>(){});
+
+        entity = new RestRegisterHelper<Entity<Invoice>>(registerClient){
+            @Override
+            public Entity<Invoice> run(Entity<Invoice> entity) {
+                entity.getData().getDynamicField().put("WWW","www.test.com");
+                return entity;
+            }
+        }.execute(entity);
         return entity;
+
     }
 
 
-
+/*
     @GET
     @Path("invoices")
     @Consumes("application/json")
@@ -56,5 +56,5 @@ public class RestController {
                 new Invoice(),
                 new GenericType<Invoice>(){});
         return invoice;
-    }
+    }*/
 }

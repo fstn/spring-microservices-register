@@ -1,7 +1,7 @@
-package com.microServices.facade;
+package com.microservices.facade;
 
-import com.microServices.model.App;
-import com.microServices.model.Directory;
+import com.microservices.model.App;
+import com.microservices.model.Directory;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
