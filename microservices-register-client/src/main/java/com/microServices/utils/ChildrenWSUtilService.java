@@ -2,14 +2,12 @@ package com.microservices.utils;
 
 import com.microservices.model.App;
 import com.microservices.model.EndPoint;
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Singleton;
 import javax.ws.rs.HttpMethod;
-import javax.ws.rs.core.MediaType;
+import javax.ws.rs.client.*;
+import javax.ws.rs.core.Response;
 
 /**
  * Created by stephen on 27/02/2016.
@@ -23,26 +21,24 @@ public class ChildrenWSUtilService<T> {
      * @param result
      * @return
      */
-    public ClientResponse executeOnChildrenWS(App app, EndPoint endPoint, T result) {
-        Client client = Client.create();
+    public Response executeOnChildrenWS(App app, EndPoint endPoint, T result) {
 
-        WebResource webResource = client
-                .resource("http://" + app.getHostName() + ":"
-                        + app.getPort() + "/" +app.getPath()+"/"+ endPoint.getPath());
+        Client client = ClientBuilder.newBuilder().newClient();
+        WebTarget target = client.target("http://" + app.getHostName() + ":"
+                + app.getPort());
+        target = target.path( "/" +app.getPath()+"/"+ endPoint.getPath());
+
+        Invocation.Builder builder = target.request();
 
         switch (endPoint.getMethod()) {
             case HttpMethod.GET:
-                return webResource
-                        .get(ClientResponse.class);
+                return builder.get();
             case HttpMethod.POST:
-                return webResource.type(MediaType.APPLICATION_JSON)
-                        .post(ClientResponse.class, result);
+                return builder.post(Entity.json(result));
             case HttpMethod.PUT:
-                return webResource.type(MediaType.APPLICATION_JSON)
-                        .put(ClientResponse.class, result);
+                return builder.put(Entity.json(result));
             case HttpMethod.DELETE:
-                return webResource.type(MediaType.APPLICATION_JSON)
-                        .delete(ClientResponse.class, result);
+                return builder.delete();
             default:
                 throw new UnsupportedOperationException("Unable to execute method " + endPoint.getMethod());
         }

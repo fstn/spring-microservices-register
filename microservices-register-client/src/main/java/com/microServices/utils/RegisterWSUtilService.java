@@ -2,13 +2,15 @@ package com.microservices.utils;
 
 import com.microservices.model.App;
 import com.microservices.model.Register;
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Invocation;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.Response;
 
 @Component
 @Singleton
@@ -23,36 +25,27 @@ public class RegisterWSUtilService {
     public RegisterWSUtilService() {
     }
 
-    public ClientResponse callUnregisterWS() {
-        Client client = Client.create();
+    public Response callUnregisterWS() {
 
-        WebResource webResource = client
-                .resource("http://" + register.getHostName() + ":"
-                        + register.getPort() + "/apps/" + currentApp.getApp());
+        Client client = ClientBuilder.newBuilder().newClient();
+        WebTarget target = client.target("http://" + register.getHostName() + ":"
+                + register.getPort() );
+        target = target.path("/apps/" + currentApp.getApp());
 
-        return webResource
-                .delete(ClientResponse.class);
+        Invocation.Builder builder = target.request();
+
+        return builder.delete();
     }
 
-    public ClientResponse callHeartBeatWS() {
-        Client client = Client.create();
+    public Response callChildrenWS() {
 
-        WebResource webResource = client
-                .resource("http://" + register.getHostName() + ":"
-                        + register.getPort() + "/apps/" + currentApp.getApp() + "/" + currentApp.getInstanceID());
+        Client client = ClientBuilder.newBuilder().newClient();
+        WebTarget target = client.target("http://" + register.getHostName() + ":"
+                + register.getPort() );
+        target = target.path( "/apps/" + currentApp.getApp() + "/" + currentApp.getInstanceID() + "/children");
 
-        return webResource
-                .put(ClientResponse.class);
-    }
+        Invocation.Builder builder = target.request();
 
-    public ClientResponse callChildrenWS() {
-        Client client = Client.create();
-
-        WebResource webResource = client
-                .resource("http://" + register.getHostName() + ":"
-                        + register.getPort() + "/apps/" + currentApp.getApp() + "/" + currentApp.getInstanceID() + "/children");
-
-        return webResource
-                .get(ClientResponse.class);
+        return builder.get();
     }
 }

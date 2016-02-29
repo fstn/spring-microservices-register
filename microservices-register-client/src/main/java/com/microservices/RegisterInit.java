@@ -2,12 +2,13 @@ package com.microservices;
 
 import com.microservices.model.App;
 import com.microservices.model.Register;
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
 import org.springframework.scheduling.annotation.Scheduled;
 
-import javax.ws.rs.core.MediaType;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Invocation;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.Response;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -34,17 +35,16 @@ public class RegisterInit extends Thread {
 		int currentTry = 0;
 		while (!registered && currentTry < 100) {
 			currentTry++;
-			Client client = Client.create();
 
 
-			WebResource webResource = client
-					.resource("http://"+register.getHostName()+":"
-							+register.getPort()+"/apps/"+currentApp.getApp());
+			Client client = ClientBuilder.newBuilder().newClient();
+			WebTarget target = client.target("http://"+register.getHostName()+":"
+					+register.getPort());
+			target = target.path("/apps/"+currentApp.getApp());
 
-			ClientResponse response = webResource
-                    .accept(MediaType.APPLICATION_JSON)
-                    .type(MediaType.APPLICATION_JSON)
-					.post(ClientResponse.class,  currentApp);
+			Invocation.Builder builder = target.request();
+
+			Response response = builder.get();
 
 			if (response.getStatus() == 200 || response.getStatus() == 204) {
 				registered = true;

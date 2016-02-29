@@ -4,16 +4,12 @@ import com.microservices.RegisterInit;
 import com.microservices.model.App;
 import com.microservices.model.EndPoint;
 import com.microservices.model.Register;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.GenericType;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.type.TypeReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
-import java.util.LinkedHashMap;
+import javax.ws.rs.core.Response;
 import java.util.List;
 
 /**
@@ -37,7 +33,6 @@ public class RegisterUtilService<T> {
     private List<App> childrenApp;
     private EndPoint endPoint;
     private Object param;
-    private GenericType type;
 
     /**
      * Call this to register your service
@@ -55,29 +50,12 @@ public class RegisterUtilService<T> {
      */
     public void unregister() {
         logger.debug("Unregister");
-        ClientResponse response = registerWSUtilsService.callUnregisterWS();
+        Response response = registerWSUtilsService.callUnregisterWS();
 
         if (!isOk(response)) {
             throw new RuntimeException("Unable to unRegister application "+currentApp.getApp());
         }
 
-    }
-
-
-    /**
-     * Call this to heartBeat your service
-     * Required register.yml file inside your resource folder
-     */
-    public void heartBeat() {
-        logger.debug("HeartBeat");
-
-        ClientResponse response = registerWSUtilsService.callHeartBeatWS();
-
-        if (!isOk(response)) {
-            throw new RuntimeException("Unable to heartBeat application "+currentApp.getApp());
-        }else{
-
-        }
     }
 
 
@@ -90,10 +68,10 @@ public class RegisterUtilService<T> {
     public List<App> getChildren() {
         logger.debug("Get children");
               List<App> result = null;
-        ClientResponse response = registerWSUtilsService.callChildrenWS();
+        Response response = registerWSUtilsService.callChildrenWS();
 
         if (isOk(response)) {
-            result = response.getEntity(new GenericType<List<App>>(){});
+            result =  (List<App>) response.getEntity();
         }else{
             throw new RuntimeException("Unable to heartBeat application "+currentApp.getApp()+" "+response.getStatus());
         }
@@ -119,15 +97,12 @@ public class RegisterUtilService<T> {
         for(App app:childrenApp) {
             // execute only on child that have same endPoints
             if(app.getEndPoints().contains(endPoint)) {
-                ClientResponse response = childrenWSUtilsService.executeOnChildrenWS(app, endPoint, result);
+
+
+                Response response = childrenWSUtilsService.executeOnChildrenWS(app, endPoint, result);
 
                 if (isOk(response)) {
-                    LinkedHashMap<String,Object> genericResult = response.getEntity(new GenericType<LinkedHashMap<String,Object>>(){});
-                    ObjectMapper mapper = new ObjectMapper();
-                    result =
-                            mapper.readValue(genericResult, new TypeReference<result.>(){});
-
-
+                    result = (T)response.getEntity();
                 } else {
                     throw new RuntimeException("Unable to execute endPoint on children application " + app.getApp() + " " + endPoint + " " + response.getStatus());
                 }
@@ -136,7 +111,7 @@ public class RegisterUtilService<T> {
         return result;
     }
 
-    private boolean isOk(ClientResponse response) {
+    private boolean isOk(Response response) {
         return response.getStatus() == 200 || response.getStatus() == 204;
     }
 
