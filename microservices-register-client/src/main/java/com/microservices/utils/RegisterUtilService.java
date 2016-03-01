@@ -71,7 +71,7 @@ public class RegisterUtilService<T> {
         Response response = registerWSUtilsService.callChildrenWS();
 
         if (isOk(response)) {
-            result =  (List<App>) response.getEntity();
+            result =  (List<App>) response.readEntity(List.class);
         }else{
             throw new RuntimeException("Unable to heartBeat application "+currentApp.getApp()+" "+response.getStatus());
         }
