@@ -2,6 +2,7 @@ app:
  app: world
  path:  /world/rest
  parentApp: api
+ priority: 100.0
  hostName: 127.0.0.1
  status: STARTING
  port: 8081

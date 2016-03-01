@@ -61,6 +61,11 @@ public class App {
      */
     private Date lastUpdate;
 
+    /**
+     * Method endPoint priority
+     */
+    private Double priority;
+
     public App() {
         super();
     }
@@ -137,6 +142,14 @@ public class App {
 
     public void setLastUpdate(Date lastUpdate) {
         this.lastUpdate = lastUpdate;
+    }
+
+    public Double getPriority() {
+        return priority;
+    }
+
+    public void setPriority(Double priority) {
+        this.priority = priority;
     }
 
     @Override

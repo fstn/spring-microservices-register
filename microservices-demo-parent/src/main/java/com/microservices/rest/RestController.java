@@ -2,8 +2,7 @@ package com.microservices.rest;
 
 import com.microservices.RegisterClient;
 import com.microservices.RestRegisterHelper;
-import com.microservices.model.Entity;
-import com.microservices.model.Invoice;
+import com.microservices.model.EntityInvoice;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -24,37 +23,23 @@ public class RestController {
     private static final Logger logger = LoggerFactory.getLogger(RestController.class);
 
     @Inject
-    RegisterClient<Entity<Invoice>> registerClient;
-
+    RegisterClient<EntityInvoice> registerClient;
 
     @POST
     @Path("validate")
     @Consumes("application/json")
     @Produces("application/json")
-    public Entity<Invoice> validate(Entity<Invoice> entity) {
+    public EntityInvoice validate(EntityInvoice entity) {
 
-        entity = new RestRegisterHelper<Entity<Invoice>>(registerClient){
+        entity = new RestRegisterHelper<EntityInvoice>(registerClient) {
             @Override
-            public Entity<Invoice> run(Entity<Invoice> entity) {
-                entity.getData().getDynamicField().put("WWW","www.test.com");
+            public EntityInvoice run(EntityInvoice entity) {
+                entity.getData().getDynamicField().put("WWW", "www.test.com");
                 return entity;
             }
         }.execute(entity);
         return entity;
 
     }
-
-
-/*
-    @GET
-    @Path("invoices")
-    @Consumes("application/json")
-    @Produces("application/json")
-    public Invoice getInvoice() {
-        logger.info("GetInvoices");
-        Invoice invoice = (Invoice)registerClient.executeOnChildren(new EndPoint("invoices", HttpMethod.GET,EndPoint.ExecutePosition.AFTER),
-                new Invoice(),
-                new GenericType<Invoice>(){});
-        return invoice;
-    }*/
 }
+

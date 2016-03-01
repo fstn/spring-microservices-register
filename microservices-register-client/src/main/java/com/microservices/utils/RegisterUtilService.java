@@ -2,6 +2,7 @@ package com.microservices.utils;
 
 import com.microservices.RegisterInit;
 import com.microservices.model.App;
+import com.microservices.model.AppListDTO;
 import com.microservices.model.EndPoint;
 import com.microservices.model.Register;
 import org.slf4j.Logger;
@@ -9,8 +10,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
+import javax.ws.rs.NotAcceptableException;
 import javax.ws.rs.core.Response;
-import java.util.List;
 
 /**
  * Created by stephen on 27/02/2016.
@@ -30,17 +31,21 @@ public class RegisterUtilService<T> {
 
     @Inject
     private ChildrenWSUtilService<T> childrenWSUtilsService;
-    private List<App> childrenApp;
+    private App childApp;
     private EndPoint endPoint;
     private Object param;
+
+    public RegisterUtilService() {
+        super();
+    }
 
     /**
      * Call this to register your service
      * Required register.yml file inside your resource folder
      */
-    public void register(){
+    public void register() {
         logger.debug("Register");
-        RegisterInit registerInit = new RegisterInit(currentApp,register);
+        RegisterInit registerInit = new RegisterInit(currentApp, register);
         registerInit.start();
     }
 
@@ -53,7 +58,7 @@ public class RegisterUtilService<T> {
         Response response = registerWSUtilsService.callUnregisterWS();
 
         if (!isOk(response)) {
-            throw new RuntimeException("Unable to unRegister application "+currentApp.getApp());
+            throw new RuntimeException("Unable to unRegister application " + currentApp.getApp());
         }
 
     }
@@ -65,16 +70,24 @@ public class RegisterUtilService<T> {
      *
      * @return
      */
-    public List<App> getChildren() {
+    public AppListDTO getChildren() {
         logger.debug("Get children");
-              List<App> result = null;
-        Response response = registerWSUtilsService.callChildrenWS();
+        AppListDTO result = null;
+        result = (AppListDTO) registerWSUtilsService.callChildrenWS(AppListDTO.class);
+        /*if (isOk(response)) {
 
-        if (isOk(response)) {
-            result =  (List<App>) response.readEntity(List.class);
-        }else{
-            throw new RuntimeException("Unable to heartBeat application "+currentApp.getApp()+" "+response.getStatus());
-        }
+            JAXBContext jaxbContext = null;
+            try {
+
+                jaxbContext = JAXBContext.newInstance(List.class);
+                List<App> myBean = (List<App>) jaxbContext.createUnmarshaller().unmarshal(response.get());
+                result = (List<App>) response.readEntity(List.class);
+            } catch (JAXBException e) {
+                e.printStackTrace();
+            }
+        } else {
+            throw new RuntimeException("Unable to getChildren application " + currentApp.getApp() + " " + response.getStatus());
+        }*/
         return result;
     }
 
@@ -83,29 +96,23 @@ public class RegisterUtilService<T> {
      * Call this to execute endPoint on your service's children
      * Required register.yml file inside your resource folder
      *
-     * @param childrenApp
+     * @param childApp
      * @param endPoint
      * @param param
      * @return
      */
-    public T executeOnChildren(List<App> childrenApp, EndPoint endPoint, T param) {
-        this.childrenApp = childrenApp;
+    public T executeOnChild(App childApp, EndPoint endPoint, T param) {
+        this.childApp = childApp;
         this.endPoint = endPoint;
         this.param = param;
-        logger.debug("Call child "+childrenApp+", "+endPoint);
+        logger.debug("Call child " + childApp + ", " + endPoint);
         T result = param;
-        for(App app:childrenApp) {
-            // execute only on child that have same endPoints
-            if(app.getEndPoints().contains(endPoint)) {
-
-
-                Response response = childrenWSUtilsService.executeOnChildrenWS(app, endPoint, result);
-
-                if (isOk(response)) {
-                    result = (T)response.getEntity();
-                } else {
-                    throw new RuntimeException("Unable to execute endPoint on children application " + app.getApp() + " " + endPoint + " " + response.getStatus());
-                }
+        // execute only on child that have same endPoints
+        if (childApp.getEndPoints().contains(endPoint)) {
+            try {
+                result = childrenWSUtilsService.executeOnChildrenWS(childApp, endPoint, result);
+            } catch (NotAcceptableException e) {
+                throw new RuntimeException("Unable to execute endPoint on children application " + childApp.getApp() + " " + endPoint + " ", e);
             }
         }
         return result;

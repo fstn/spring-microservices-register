@@ -2,14 +2,14 @@ package com.microservices.api.rest;
 
 import com.microservices.facade.DirectoryFacade;
 import com.microservices.model.App;
+import com.microservices.model.AppDTO;
+import com.microservices.model.AppListDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;
-import java.util.List;
-import java.util.Optional;
 
 /**
  * Created by SZA on 26/02/2016.
@@ -22,6 +22,7 @@ public class RegisterController {
 
     @Inject
     DirectoryFacade directoryFacade;
+
     /**
      * Register new application instance
      *
@@ -31,8 +32,8 @@ public class RegisterController {
     @Path("/{appID}")
     @Consumes("application/json")
     @Produces("application/json")
-    public void registerApps(@PathParam("appID") String appID,App app) {
-        logger.info("Register "+app);
+    public void registerApps(@PathParam("appID") String appID, App app) {
+        logger.info("Register " + app);
         directoryFacade.register(app);
     }
 
@@ -46,23 +47,23 @@ public class RegisterController {
     @Path("/{appID}/{instanceID}")
     @Consumes("application/json")
     @Produces("application/json")
-    public void unRegisterApps(@PathParam ("appID") String appID, @PathParam("instanceID") String instanceID) {
-        logger.info("UnRegister "+appID+":"+appID);
+    public void unRegisterApps(@PathParam("appID") String appID, @PathParam("instanceID") String instanceID) {
+        logger.info("UnRegister " + appID + ":" + appID);
     }
 
     /**
      * Send application instance heartbeat
      *
-     * @param appID application ID
+     * @param appID      application ID
      * @param instanceID instance ID
      */
     @PUT
     @Path("/{appID}/{instanceID}")
     @Consumes("application/json")
     @Produces("application/json")
-    public Optional<App> heartBeatApps(@PathParam("appID") String appID, @PathParam("instanceID") String instanceID) {
-        logger.info("HeartBeat "+appID+":"+instanceID);
-        return directoryFacade.findRegisteredByIdAndInstanceId(appID,instanceID);
+    public AppDTO heartBeatApps(@PathParam("appID") String appID, @PathParam("instanceID") String instanceID) {
+        logger.info("HeartBeat " + appID + ":" + instanceID);
+        return new AppDTO(directoryFacade.findRegisteredByIdAndInstanceId(appID, instanceID));
     }
 
     /**
@@ -73,24 +74,24 @@ public class RegisterController {
     @GET
     @Path("/{appID}")
     @Produces("application/json")
-    public Optional<App> getApps(@PathParam("appID") String appID) {
-        logger.info("Get app  with ID "+appID);
-        return directoryFacade.findRegisteredById(appID);
+    public AppDTO getApps(@PathParam("appID") String appID) {
+        logger.info("Get app  with ID " + appID);
+        return new AppDTO(directoryFacade.findRegisteredById(appID));
 
     }
 
     /**
      * Return application child endpoints
      *
-     * @param appID application ID
+     * @param appID      application ID
      * @param instanceID instance ID
      */
     @GET
     @Path("/{appID}/{instanceID}/children")
     @Produces("application/json")
-    public List<App> getInstanceChildren(@PathParam("appID") String appID, @PathParam("instanceID") String instanceID) {
-        logger.info("Get children for app  with ID "+appID+":"+instanceID);
-        return directoryFacade.findRegisteredChildrenById(appID);
+    public AppListDTO getInstanceChildren(@PathParam("appID") String appID, @PathParam("instanceID") String instanceID) {
+        logger.info("Get children for app  with ID " + appID + ":" + instanceID);
+        return new AppListDTO(directoryFacade.findRegisteredChildrenById(appID));
     }
 
     /**
@@ -101,9 +102,8 @@ public class RegisterController {
     @GET
     @Path("/")
     @Produces("application/json")
-    public List<App> getApps() {
+    public AppListDTO getApps() {
         logger.info("Get all apps ");
-        return directoryFacade.getAllRegistered();
-
+        return new AppListDTO(directoryFacade.getAllRegistered());
     }
 }

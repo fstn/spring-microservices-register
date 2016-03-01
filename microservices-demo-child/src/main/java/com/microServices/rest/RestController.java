@@ -1,15 +1,18 @@
 package com.microservices.rest;
 
 import com.microservices.RegisterClient;
-import com.microservices.model.Entity;
-import com.microservices.model.Invoice;
 import com.microservices.RestRegisterHelper;
+import com.microservices.model.EntityInvoice;
+import com.microservices.utils.RegisterUtilService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 
 /**
  * Created by stephen on 27/02/2016.
@@ -21,17 +24,17 @@ public class RestController {
     private static final Logger logger = LoggerFactory.getLogger(RestController.class);
 
     @Inject
-    RegisterClient<Entity<Invoice>> registerClient;
+    RegisterClient<EntityInvoice> registerClient;
 
     @POST
     @Path("validate")
     @Consumes("application/json")
     @Produces("application/json")
-    public Entity<Invoice> validate(Entity<Invoice> entity) {
-        entity = new RestRegisterHelper<Entity<Invoice>>(registerClient){
+    public EntityInvoice validate(EntityInvoice entity) {
+        entity = new RestRegisterHelper<EntityInvoice>(registerClient){
             @Override
-            public Entity run(Entity<Invoice> entity) {
-                ((Entity<Invoice>)entity).getData().getDynamicField().put("TVA_INTRACOM",10.5);
+            public EntityInvoice run(EntityInvoice entity) {
+                ((EntityInvoice)entity).getData().getDynamicField().put("TVA_INTRACOM",10.5);
                 return entity;
             }
         }.execute(entity);

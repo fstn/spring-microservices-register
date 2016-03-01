@@ -65,6 +65,7 @@ public class MicroServiceRegisterApplicationTests {
         childApp.setHostName("127.0.0.1");
         childApp.setPort(8080);
         childApp.setInstanceID("1");
+        childApp.setPriority(200.0);
         ArrayList<EndPoint> endPoints = new ArrayList<>();
         endPoints.add(new EndPoint("validate", HttpMethod.POST));
         childApp.setEndPoints(endPoints);
@@ -134,5 +135,24 @@ public class MicroServiceRegisterApplicationTests {
         assertEquals("My childApp is a child", childApp.getApp(), registeredChildren.get(0).getApp());
     }
 
+    @Test
+    public void appChildrenPrioritySort() {
+
+        App childApp2 = new App();
+        childApp2.setPath("/us/rest");
+        childApp2.setApp("usa");
+        childApp2.setHostName("127.0.0.1");
+        childApp2.setPort(8080);
+        childApp2.setInstanceID("1");
+        childApp2.setPriority(300.0);
+        ArrayList<EndPoint> endPoints = new ArrayList<>();
+        endPoints.add(new EndPoint("validate", HttpMethod.POST));
+        childApp2.setEndPoints(endPoints);
+        childApp2.setParentApp(parentApp.getApp());
+        directoryFacade.register(childApp2);
+        List<App> registeredChildren = directoryFacade.findRegisteredChildrenById(parentApp.getApp());
+        assertEquals("There is one registered childApp", 1, registeredChildren.size());
+        assertEquals("My childApp is  childApp2 because priority is bigger", childApp2.getApp(), registeredChildren.get(0).getApp());
+    }
 
 }

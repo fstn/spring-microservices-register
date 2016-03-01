@@ -5,6 +5,7 @@ import com.microservices.model.Directory;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -85,19 +86,18 @@ public class DirectoryFacade {
 
     /**
      * Find children with parent app ID
+     * sort by priority DESC
      * @param appID application ID
      * @return App app
      */
     public List<App> findRegisteredChildrenById(String appID) {
         List<App> result;
-
-
         if(appID == null ){
             throw new RuntimeException("AppId can't be null to find a App in Directory");
         }
         result = directory.getRegisteredApps().stream().
                 filter(app -> (app.getParentApp().equals(appID))).collect(Collectors.toList());
-
+        Collections.sort(result,(o1, o2) -> o1.getPriority().compareTo(o2.getPriority()));
         return result;
     }
 }

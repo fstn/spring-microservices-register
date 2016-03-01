@@ -26,6 +26,9 @@ import java.util.List;
 public class RegisterClient<T> {
 
     @Inject
+    ConfigurationTester configurationTester;
+
+    @Inject
     RegisterUtilService<T> registerUtil;
 
     @Inject
@@ -37,8 +40,10 @@ public class RegisterClient<T> {
 
     @PostConstruct
     public void init() {
+        //test configuration file
+        configurationTester.testConfiguration();
         registerUtil.register();
-        heartBeat();
+        getChildren();
     }
 
     @PreDestroy
@@ -47,24 +52,10 @@ public class RegisterClient<T> {
     }
 
     @Scheduled(fixedDelayString  = "${config.heartBeatDelay}")
-    public void heartBeat() {
+    public void getChildren() {
         // get childs
-        childrenApp = registerUtil.getChildren();
+        childrenApp = registerUtil.getChildren().getData();
     }
-
-    /**
-     * Execute method on children
-     * @param endPoint
-     * @param param
-     * @return
-     */
-    public T executeOnChildren(EndPoint endPoint, T param){
-        // call childs
-        T result = registerUtil.executeOnChildren(childrenApp,endPoint,param);
-        //return child result
-        return result;
-    }
-
     /**
      * Add StackCall inside entity
      * @param entity
@@ -77,15 +68,11 @@ public class RegisterClient<T> {
     }
 
     /**
-     * Execute method on children
-     * @param entity
+     * Return endPoint that match with method
      * @param localClass
      * @return
      */
-    public T executeOnChildren(T entity, Class localClass) {
-        if(! (entity instanceof  Entity)){
-            throw new RuntimeException("entity must be an Entity");
-        }
+    public EndPoint getEndPoint(Class localClass) {
         Method m = localClass.getEnclosingMethod();
         String path = ((Path)m.getAnnotationsByType(Path.class)[0]).value();
         String method = null;
@@ -101,9 +88,31 @@ public class RegisterClient<T> {
             method = HttpMethod.DELETE;
         }
         EndPoint endPoint = new EndPoint(path, method) ;
-        T result = registerUtil.executeOnChildren(childrenApp,endPoint,entity);
-        ((Entity)result).getStackTrace().add(new StackTraceWSElement(app,endPoint));
-        return result;
+        return endPoint;
     }
 
+
+    public List<App> getChildrenApp() {
+        return childrenApp;
+    }
+
+    public void setChildrenApp(List<App> childrenApp) {
+        this.childrenApp = childrenApp;
+    }
+
+    public RegisterUtilService<T> getRegisterUtil() {
+        return registerUtil;
+    }
+
+    public void setRegisterUtil(RegisterUtilService<T> registerUtil) {
+        this.registerUtil = registerUtil;
+    }
+
+    public App getApp() {
+        return app;
+    }
+
+    public void setApp(App app) {
+        this.app = app;
+    }
 }

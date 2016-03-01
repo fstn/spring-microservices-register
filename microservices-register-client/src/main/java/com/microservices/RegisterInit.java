@@ -2,12 +2,10 @@ package com.microservices;
 
 import com.microservices.model.App;
 import com.microservices.model.Register;
+import org.glassfish.jersey.jackson.JacksonFeature;
 import org.springframework.scheduling.annotation.Scheduled;
 
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Invocation;
-import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.client.*;
 import javax.ws.rs.core.Response;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -37,14 +35,15 @@ public class RegisterInit extends Thread {
 			currentTry++;
 
 
-			Client client = ClientBuilder.newBuilder().newClient();
+			Client client = ClientBuilder.newBuilder().register(JacksonFeature.class).build();
 			WebTarget target = client.target("http://"+register.getHostName()+":"
 					+register.getPort());
 			target = target.path("/apps/"+currentApp.getApp());
 
 			Invocation.Builder builder = target.request();
 
-			Response response = builder.get();
+
+			Response response = builder.post(Entity.json(currentApp));
 
 			if (response.getStatus() == 200 || response.getStatus() == 204) {
 				registered = true;

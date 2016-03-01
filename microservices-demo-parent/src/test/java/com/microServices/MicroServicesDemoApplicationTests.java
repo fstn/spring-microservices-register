@@ -1,9 +1,6 @@
 package com.microservices;
 
-import com.microservices.model.App;
-import com.microservices.model.Entity;
-import com.microservices.model.Invoice;
-import com.microservices.model.Register;
+import com.microservices.model.*;
 import com.microservices.utils.ChildrenWSUtilService;
 import com.microservices.utils.RegisterUtilService;
 import com.microservices.utils.RegisterWSUtilService;
@@ -14,7 +11,6 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.stubbing.Answer;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -46,10 +42,10 @@ public class MicroServicesDemoApplicationTests {
 
     @Inject
     @InjectMocks
-    private RegisterUtilService<Entity<Invoice>> registerUtilService;
+    private RegisterUtilService<EntityInvoice> registerUtilService;
 
 	@Inject
-	private RegisterClient<Entity<Invoice>> registerClient;
+	private RegisterClient<EntityInvoice> registerClient;
 
 	private List<App> childrenApps;
 	private Invoice invoice;
@@ -58,7 +54,7 @@ public class MicroServicesDemoApplicationTests {
 	private Invocation.Builder builder;
     private Response clientResponse;
     private Response invoiceResponse;
-	private Entity<Invoice> invoiceEntity;
+	private EntityInvoice invoiceEntity;
 
 	@Before
 	public void startUp() {
@@ -73,7 +69,7 @@ public class MicroServicesDemoApplicationTests {
 		invoice.setId("1212");
 		invoice.setTva(19.6);
 
-		invoiceEntity = new Entity<>();
+		invoiceEntity = new EntityInvoice();
 		invoiceEntity.setData(invoice);
         childrenAppsMockResponse = mock(Response.class);
         webResource = mock( WebTarget.class );
@@ -91,12 +87,13 @@ public class MicroServicesDemoApplicationTests {
         when( invoiceResponse.getStatus() ).thenReturn( 200 );
 		when(webResource.request()).thenReturn(builder);
 
-        when(registerWSUtilService.callChildrenWS()).thenReturn(clientResponse );
+        when(registerWSUtilService.callChildrenWS(childrenApps.getClass())).thenReturn( childrenApps);
         registerUtilService.registerWSUtilsService = registerWSUtilService;
         registerClient.registerUtil = registerUtilService;
 
         // mock execute client call
-        when(childrenWSUtilService.executeOnChildrenWS(any(),any(),any())).thenReturn(invoiceResponse);
+        when(registerUtilService.getChildren()).thenReturn(new AppListDTO(childrenApps));
+        when(childrenWSUtilService.executeOnChildrenWS(any(),any(),any())).thenReturn(invoiceEntity);
 
 	}
 	@Test
@@ -111,13 +108,11 @@ public class MicroServicesDemoApplicationTests {
 
 	@Test
 	public void callClient(){
-        registerClient.heartBeat();
-		Entity<Invoice> entity = new Entity<>();
+        registerClient.getChildren();
+        EntityInvoice entity = new EntityInvoice();
 		entity.setData(invoice);
-		Entity<Invoice> resultEntity  =  registerClient.executeOnChildren(app.getEndPoints().get(0),
+		EntityInvoice resultEntity  =  registerClient.executeOnChildren(app.getEndPoints().get(0),
 				entity);
-        //il y a 3 enfants à appele r
-        verify(childrenWSUtilService.executeOnChildrenWS(any(),any(),any()),times(3));
 		Assert.assertEquals(invoice.getAmount(),resultEntity.getData().getAmount());
 	}
 }
