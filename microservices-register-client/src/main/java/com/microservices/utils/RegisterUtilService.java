@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
-import javax.ws.rs.NotAcceptableException;
 import javax.ws.rs.core.Response;
 
 /**
@@ -60,9 +59,7 @@ public class RegisterUtilService<T> {
         if (!isOk(response)) {
             throw new RuntimeException("Unable to unRegister application " + currentApp.getApp());
         }
-
     }
-
 
     /**
      * Call this to get app your service's children
@@ -73,24 +70,13 @@ public class RegisterUtilService<T> {
     public AppListDTO getChildren() {
         logger.debug("Get children");
         AppListDTO result = null;
-        result = (AppListDTO) registerWSUtilsService.callChildrenWS(AppListDTO.class);
-        /*if (isOk(response)) {
-
-            JAXBContext jaxbContext = null;
-            try {
-
-                jaxbContext = JAXBContext.newInstance(List.class);
-                List<App> myBean = (List<App>) jaxbContext.createUnmarshaller().unmarshal(response.get());
-                result = (List<App>) response.readEntity(List.class);
-            } catch (JAXBException e) {
-                e.printStackTrace();
-            }
-        } else {
-            throw new RuntimeException("Unable to getChildren application " + currentApp.getApp() + " " + response.getStatus());
-        }*/
+        try {
+            result = (AppListDTO) registerWSUtilsService.callChildrenWS(AppListDTO.class);
+        }catch (Exception ex){
+            throw new RuntimeException("Unable to getChildren application " + currentApp.getApp() + " " );
+        }
         return result;
     }
-
 
     /**
      * Call this to execute endPoint on your service's children
@@ -111,8 +97,11 @@ public class RegisterUtilService<T> {
         if (childApp.getEndPoints().contains(endPoint)) {
             try {
                 result = childrenWSUtilsService.executeOnChildrenWS(childApp, endPoint, result);
-            } catch (NotAcceptableException e) {
-                throw new RuntimeException("Unable to execute endPoint on children application " + childApp.getApp() + " " + endPoint + " ", e);
+            } catch (Exception e) {
+                logger.error("From Application "+currentApp.getApp()+":"+currentApp.getInstanceID()
+                        +" Unable to execute endPoint on children application " + childApp.getApp()+":"+childApp.getInstanceID() +
+                        " " + endPoint + " ", e);
+                throw e;
             }
         }
         return result;
@@ -121,6 +110,4 @@ public class RegisterUtilService<T> {
     private boolean isOk(Response response) {
         return response.getStatus() == 200 || response.getStatus() == 204;
     }
-
-
 }

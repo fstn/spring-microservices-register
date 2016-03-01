@@ -1,0 +1,10 @@
+server:
+  port: 8094
+  contextPath: /fr/rest
+
+spring:
+ application:
+  name: fr
+
+config:
+ heartBeatDelay: 1000

@@ -1,0 +1,10 @@
+server:
+  port: 8093
+  contextPath: /eu/rest
+
+spring:
+ application:
+  name: eu
+
+config:
+ heartBeatDelay: 1000

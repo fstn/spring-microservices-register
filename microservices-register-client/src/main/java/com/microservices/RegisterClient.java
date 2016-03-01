@@ -76,8 +76,6 @@ public class RegisterClient<T> {
         Method m = localClass.getEnclosingMethod();
         String path = ((Path)m.getAnnotationsByType(Path.class)[0]).value();
         String method = null;
-
-
         if(m.isAnnotationPresent(POST.class)) {
             method = HttpMethod.POST;
         }else if(m.isAnnotationPresent(GET.class)) {

@@ -4,12 +4,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.microservices</groupId>
-    <artifactId>spring-microservices</artifactId>
+    <artifactId>microservices-demo-second-child</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <packaging>pom</packaging>
+    <packaging>jar</packaging>
 
-    <name>spring-microservices</name>
-    <description>client for microservice registrer</description>
+    <name>microservices-demo-child-fr</name>
+    <description>Demo project for microservice register</description>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -31,6 +31,25 @@
             <artifactId>spring-boot-starter</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jersey</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.microservices</groupId>
+            <artifactId>microservices-registrer-client</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.microservices</groupId>
+            <artifactId>microservices-registrer-client</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
             <version>${logback.version}</version>
@@ -45,22 +64,16 @@
             <artifactId>slf4j-api</artifactId>
             <version>${sl4j-apps.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-
     </dependencies>
 
-    <modules>
-        <module>microservices-register-client</module>
-        <module>microservices-registrer</module>
-        <module>microservices-demo-world</module>
-        <module>microservices-demo-child-fr</module>
-        <module>microservices-demo-child-eu</module>
-        <module>microservices-registrer-common</module>
-    </modules>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 
 
 </project>

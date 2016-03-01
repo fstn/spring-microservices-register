@@ -1,19 +1,16 @@
 app:
  app: world
- path:  /world/rest
  parentApp: api
- priority: 100
  hostName: 127.0.0.1
  status: STARTING
  port: 8080
+ priority: 12
+ path: /
  instanceID: 1
  endPoints:
       -
-          path: /validate
+          path: validate
           method: POST
-      -
-          path: /invoices
-          method: GET
 register:
  hostName: 127.0.0.1
  port: 8091

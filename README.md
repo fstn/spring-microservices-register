@@ -80,11 +80,79 @@ POST http://{parent host}:{parent port}/{parent context path}/validate
     ]
 }
 ```
-* In result JSON you will see child call in stackTrace, exemple
 
+* In result JSON you will see child call in stackTrace, exemple
 ```javascript
 {
+  "stopAll": false,
+  "stopChildren": false,
   "stackTrace": [
+    {
+      "app": {
+        "app": "world",
+        "path": "world/rest",
+        "parentApp": "api",
+        "hostName": "127.0.0.1",
+        "status": "STARTING",
+        "port": 8081,
+        "instanceID": "1",
+        "endPoints": [
+          {
+            "path": "validate",
+            "method": "POST"
+          },
+          {
+            "path": "stopChildren",
+            "method": "POST"
+          },
+          {
+            "path": "stopAll",
+            "method": "POST"
+          },
+          {
+            "path": "errorOnChild",
+            "method": "POST"
+          }
+        ],
+        "lastUpdate": null,
+        "priority": 100
+      },
+      "endPoint": {
+        "path": "validate",
+        "method": "POST"
+      }
+    },
+    {
+      "app": {
+        "app": "fr",
+        "path": "fr/rest",
+        "parentApp": "eu",
+        "hostName": "127.0.0.1",
+        "status": "STARTING",
+        "port": 8094,
+        "instanceID": "1",
+        "endPoints": [
+          {
+            "path": "validate",
+            "method": "POST"
+          },
+          {
+            "path": "stopChildren",
+            "method": "POST"
+          },
+          {
+            "path": "stopAll",
+            "method": "POST"
+          }
+        ],
+        "lastUpdate": null,
+        "priority": 10
+      },
+      "endPoint": {
+        "path": "validate",
+        "method": "POST"
+      }
+    },
     {
       "app": {
         "app": "eu",
@@ -100,35 +168,20 @@ POST http://{parent host}:{parent port}/{parent context path}/validate
             "method": "POST"
           },
           {
-            "path": "invoices",
-            "method": "GET"
-          }
-        ]
-      },
-      "endPoint": {
-        "path": "validate",
-        "method": "POST"
-      }
-    },
-    {
-      "app": {
-        "app": "world",
-        "path": "world/rest",
-        "parentApp": "api",
-        "hostName": "127.0.0.1",
-        "status": "STARTING",
-        "port": 8080,
-        "instanceID": "1",
-        "endPoints": [
-          {
-            "path": "validate",
+            "path": "stopChildren",
             "method": "POST"
           },
           {
-            "path": "invoices",
-            "method": "GET"
+            "path": "stopAll",
+            "method": "POST"
+          },
+          {
+            "path": "errorOnChild",
+            "method": "POST"
           }
-        ]
+        ],
+        "lastUpdate": null,
+        "priority": 200
       },
       "endPoint": {
         "path": "validate",
@@ -136,16 +189,258 @@ POST http://{parent host}:{parent port}/{parent context path}/validate
       }
     }
   ],
+  "stackError": [],
   "data": {
     "amount": 1980.52,
     "id": "12",
     "tva": 98.2,
     "dynamicField": {
-      "TVA_INTRACOM": 10.5,
-      "WWW": "www.test.com"
+      "WWW": "www.invoice.com",
+      "TVA_FR": 10.5,
+      "TVA_INTRACOM": 10.5
     }
   }
 }
 ```
 
 
+## Handling Error
+
+Request:
+```CURL
+http://localhost:8081/world/rest/errorOnChild
+```
+
+Result:
+```javascript
+{
+  "stopAll": false,
+  "stopChildren": false,
+  "stackTrace": [
+    {
+      "app": {
+        "app": "world",
+        "path": "world/rest",
+        "parentApp": "api",
+        "hostName": "127.0.0.1",
+        "status": "STARTING",
+        "port": 8081,
+        "instanceID": "1",
+        "endPoints": [
+          {
+            "path": "validate",
+            "method": "POST"
+          },
+          {
+            "path": "stopChildren",
+            "method": "POST"
+          },
+          {
+            "path": "stopAll",
+            "method": "POST"
+          },
+          {
+            "path": "errorOnChild",
+            "method": "POST"
+          }
+        ],
+        "lastUpdate": null,
+        "priority": 100
+      },
+      "endPoint": {
+        "path": "errorOnChild",
+        "method": "POST"
+      }
+    }
+  ],
+  "stackError": [
+    {
+      "app": {
+        "app": "eu",
+        "path": "eu/rest",
+        "parentApp": "world",
+        "hostName": "127.0.0.1",
+        "status": "STARTING",
+        "port": 8093,
+        "instanceID": "1",
+        "endPoints": [
+          {
+            "path": "validate",
+            "method": "POST"
+          },
+          {
+            "path": "stopChildren",
+            "method": "POST"
+          },
+          {
+            "path": "stopAll",
+            "method": "POST"
+          },
+          {
+            "path": "errorOnChild",
+            "method": "POST"
+          }
+        ],
+        "lastUpdate": 1456849494046,
+        "priority": 200
+      },
+      "endPoint": {
+        "path": "errorOnChild",
+        "method": "POST"
+      },
+      "exception": "HTTP 500 Internal Server Error"
+    }
+  ],
+  "data": {
+    "amount": 1980.52,
+    "id": "12",
+    "tva": 98.2,
+    "dynamicField": {
+      "WWW": "www.invoice.com"
+    }
+  }
+}
+```
+
+
+## Stop inheritance propagation 
+
+Request:
+```CURL
+http://localhost:8081/world/rest/stopChildren
+```
+
+Java:
+```JAVA
+   @Override
+            public EntityInvoice run(EntityInvoice entity) {
+                this.stopAll(entity);
+                return entity;
+            }
+        }.execute(entity);
+        return entity;
+```
+
+Result:
+```javascript
+{
+  "stopAll": false,
+  "stopChildren": false,
+  "stackTrace": [
+    {
+      "app": {
+        "app": "world",
+        "path": "world/rest",
+        "parentApp": "api",
+        "hostName": "127.0.0.1",
+        "status": "STARTING",
+        "port": 8081,
+        "instanceID": "1",
+        "endPoints": [
+          {
+            "path": "validate",
+            "method": "POST"
+          },
+          {
+            "path": "stopChildren",
+            "method": "POST"
+          },
+          {
+            "path": "stopAll",
+            "method": "POST"
+          },
+          {
+            "path": "errorOnChild",
+            "method": "POST"
+          }
+        ],
+        "lastUpdate": null,
+        "priority": 100
+      },
+      "endPoint": {
+        "path": "stopChildren",
+        "method": "POST"
+      }
+    },
+    {
+      "app": {
+        "app": "eu",
+        "path": "eu/rest",
+        "parentApp": "world",
+        "hostName": "127.0.0.1",
+        "status": "STARTING",
+        "port": 8093,
+        "instanceID": "1",
+        "endPoints": [
+          {
+            "path": "validate",
+            "method": "POST"
+          },
+          {
+            "path": "stopChildren",
+            "method": "POST"
+          },
+          {
+            "path": "stopAll",
+            "method": "POST"
+          },
+          {
+            "path": "errorOnChild",
+            "method": "POST"
+          }
+        ],
+        "lastUpdate": null,
+        "priority": 200
+      },
+      "endPoint": {
+        "path": "stopChildren",
+        "method": "POST"
+      }
+    }
+  ],
+  "stackError": [],
+  "data": {
+    "amount": 1980.52,
+    "id": "12",
+    "tva": 98.2,
+    "dynamicField": {
+      "WWW": "www.invoice.com",
+      "TVA_INTRACOM": 10.5
+    }
+  }
+}
+```
+
+## Stop inheritance propagation All
+
+Request:
+```CURL
+http://localhost:8081/world/rest/stopChildren
+```
+
+Java:
+```JAVA
+   @Override
+            public EntityInvoice run(EntityInvoice entity) {
+                this.stopChildren(entity);
+                return entity;
+            }
+        }.execute(entity);
+        return entity;
+```
+
+Result:
+```javascript
+{
+  "stopAll": true,
+  "stopChildren": false,
+  "stackTrace": [],
+  "stackError": [],
+  "data": {
+    "amount": 1980.52,
+    "id": "12",
+    "tva": 98.2,
+    "dynamicField": {}
+  }
+}
+```
