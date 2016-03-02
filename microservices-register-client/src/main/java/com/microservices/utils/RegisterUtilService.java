@@ -95,6 +95,7 @@ public class RegisterUtilService<T> {
             logger.error("From "+currentApp.getId()+": Unable to getChildren application ",ex);
             return null;
         }
+        Preconditions.checkNotNull(result,"From "+currentApp.getId()+": Unable to getChildren application ");
         return result.getData();
     }
 

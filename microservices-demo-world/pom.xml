@@ -4,11 +4,11 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.microservices</groupId>
-	<artifactId>microservices-demo-parent</artifactId>
+	<artifactId>microservices-demo-world</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name>microservices-demo-parent</name>
+	<name>microservices-demo-world</name>
 	<description>Demo project for microservice register</description>
 
 	<parent>

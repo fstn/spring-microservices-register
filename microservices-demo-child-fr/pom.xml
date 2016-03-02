@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.microservices</groupId>
-    <artifactId>microservices-demo-second-child</artifactId>
+    <artifactId>microservices-demo-child-fr</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 

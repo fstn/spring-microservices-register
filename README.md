@@ -60,11 +60,11 @@ Return result:
 
 ## Try demo
 
-* Configure register [application.yml](https://github.com/fstn/spring-microservices-register/blob/master/microservices-registrer/src/main/resources/application.yml)
+* Configure register [application](https://github.com/fstn/spring-microservices-register/blob/master/microservices-registrer/src/main/resources/application.properties)
 * SpringBoot run register
-* Configure parent demo (world api) [.yml](https://github.com/fstn/spring-microservices-register/tree/master/microservices-demo-parent/src/main/resources)
+* Configure parent demo (world api) [application](https://github.com/fstn/spring-microservices-register/tree/master/microservices-demo-parent/src/main/resources)
 * SpringBoot run parent
-* Configure child demo (eu api) [.yml](https://github.com/fstn/spring-microservices-register/tree/master/microservices-demo-child/src/main/resources)
+* Configure child demo (eu api) [application](https://github.com/fstn/spring-microservices-register/tree/master/microservices-demo-child/src/main/resources)
 * SpringBoot run child
 * Try calling parent:
 
