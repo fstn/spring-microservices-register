@@ -1,4 +1,4 @@
-package com.microservices.model;
+package com.microservices.model.application;
 
 import javax.inject.Named;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -7,21 +7,21 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * App representation yml
+ * Application representation yml
  */
 
 @Named
 @XmlRootElement
-public class App {
+public class Application {
 
     /**
-     * App name
+     * Application name
      * <p/>
      * Example world, fr, eur ..
      */
     private String id;
     /**
-     * App context path
+     * Application context path
      * <p/>
      * Example /id
      */
@@ -39,23 +39,23 @@ public class App {
      */
     private String hostName;
     /**
-     * App status
+     * Application status
      */
     private StatusType status;
     /**
-     * App port
+     * Application port
      */
     private Integer port;
     /**
-     * App instanceId (use if multiple service deployed with same instanceId)
+     * Application instanceId (use if multiple service deployed with same instanceId)
      */
     private String instanceId;
     /**
-     * App available endPoints
+     * Application available endPoints
      */
     private List<EndPoint> endPoints;
     /**
-     * App last update
+     * Application last update
      */
     private Date lastUpdate;
 
@@ -63,7 +63,7 @@ public class App {
      * Method endPoint priority
      */
 
-    public App() {
+    public Application() {
 
         super();
         this.endPoints = new ArrayList<>();
@@ -156,9 +156,9 @@ public class App {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof App)) return false;
+        if (!(o instanceof Application)) return false;
 
-        App app1 = (App) o;
+        Application app1 = (Application) o;
 
         return getId() != null ? getId().equals(app1.getId()) : app1.getId() == null && (getInstanceId() != null ? getInstanceId().equals(app1.getInstanceId()) : app1.getInstanceId() == null);
 
@@ -173,7 +173,7 @@ public class App {
 
     @Override
     public String toString() {
-        return "App{" +
+        return "Application{" +
                 "id='" + id + '\'' +
                 ", parentApp='" + parentApp + '\'' +
                 ", hostName='" + hostName + '\'' +

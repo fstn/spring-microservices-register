@@ -1,9 +1,9 @@
 package com.microservices.api.rest;
 
 import com.microservices.facade.DirectoryFacade;
-import com.microservices.model.App;
-import com.microservices.model.AppDTO;
-import com.microservices.model.AppListDTO;
+import com.microservices.model.application.Application;
+import com.microservices.dto.AppDTO;
+import com.microservices.dto.AppListDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,7 +32,7 @@ public class RegisterController {
     @Path("/{appID}")
     @Consumes("application/json")
     @Produces("application/json")
-    public void registerApps(@PathParam("appID") String appID, App app) {
+    public void registerApps(@PathParam("appID") String appID, Application app) {
         logger.info("Register " + app);
         directoryFacade.register(app);
     }

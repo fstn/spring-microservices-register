@@ -1,6 +1,8 @@
 package com.microservices.model;
 
 
+import com.microservices.model.application.Application;
+
 import javax.annotation.PostConstruct;
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -14,18 +16,18 @@ import java.util.List;
 @Singleton
 @Named
 public class Directory {
-    private List<App> registeredApp;
+    private List<Application> registeredApp;
 
     @PostConstruct
     private void init() {
-        registeredApp = new ArrayList<App>();
+        registeredApp = new ArrayList<Application>();
     }
 
-    public List<App> getRegisteredApps() {
+    public List<Application> getRegisteredApps() {
         return registeredApp;
     }
 
-    public void setRegisteredApp(List<App> registeredApp) {
+    public void setRegisteredApp(List<Application> registeredApp) {
         this.registeredApp = registeredApp;
     }
 

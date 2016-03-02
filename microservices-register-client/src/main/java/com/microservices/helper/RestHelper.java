@@ -1,28 +1,40 @@
-package com.microservices;
+package com.microservices.helper;
 
-import com.microservices.model.App;
-import com.microservices.model.EndPoint;
-import com.microservices.model.Entity;
-import com.microservices.model.StackTraceWSElement;
+import com.microservices.EndPointFacade;
+import com.microservices.RegisterClient;
+import com.microservices.model.*;
+import com.microservices.model.application.Application;
+import com.microservices.model.application.EndPoint;
+import com.microservices.model.stackTrace.StackTraceWSElement;
+import com.microservices.model.stackTrace.StackTraceWSError;
 import com.microservices.serializer.DynamicSerializer;
 
 /**
  * Created by SZA on 29/02/2016.
  *
  * Rest helper that help top execute endPoint on children
+ *
+ * by running execute, it run endPoint on all children that are sort by priority
  */
 
-public abstract class RestRegisterHelper<T> {
+public abstract class RestHelper<T> {
 
     RegisterClient<T> registerClient;
     private Double currentEndPointPriority = 100.0;
     private boolean currentEndPointDone = false;
     private DynamicSerializer<Object, T> dynamicSerializer;
     private Class<T> classType;
+    private EndPointFacade endPointFacade;
 
-    public RestRegisterHelper(RegisterClient<T> registerClient, Class<T> classType) {
+    /**
+     *
+     * @param registerClient
+     * @param classType
+     */
+    public RestHelper(RegisterClient<T> registerClient, Class<T> classType) {
         this.registerClient = registerClient;
         this.dynamicSerializer =  new DynamicSerializer<>(Object.class,classType);
+        endPointFacade = new EndPointFacade();
     }
 
     public abstract T run(T entity);
@@ -35,8 +47,8 @@ public abstract class RestRegisterHelper<T> {
     public T execute(Object entity){
         T transformedEntity = this.dynamicSerializer.transform(entity);
 
-        EndPoint endPoint = registerClient.getEndPoint(this.getClass());
-        for(App client: registerClient.getChildrenApp()){
+        EndPoint endPoint = endPointFacade.createEndPoint(this.getClass());
+        for(Application client: registerClient.getChildrenApp()){
 
             if(((Entity)transformedEntity).isStopChildren() || ((Entity)transformedEntity).isStopAll()){
                 ((Entity)transformedEntity).setStopChildren(false);
@@ -65,7 +77,7 @@ public abstract class RestRegisterHelper<T> {
      */
     private T executeCurrentEndPoint(T entity, EndPoint endPoint) {
         entity = run(entity);
-        ((Entity)entity).getStackTrace().add(new StackTraceWSElement(registerClient.getApp(),endPoint))  ;
+        ((Entity)entity).getStackTrace().add(new StackTraceWSElement(registerClient.getCurrentApp(),endPoint))  ;
         currentEndPointDone = true;
         return entity;
     }

@@ -1,38 +1,58 @@
 package com.microservices;
 
 
-import com.microservices.model.App;
+import com.microservices.model.application.Application;
 import com.microservices.model.Config;
 import com.microservices.model.Register;
 import com.microservices.utils.Preconditions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Named;
 
 /**
+ * Created by stephen on 27/02/2016.
  * Configuration Tester
  * Verify content of application.yml file
  */
 @Named
 public class ConfigurationTester {
-
+    private static final Logger logger = LoggerFactory.getLogger(ConfigurationTester.class);
 
     public ConfigurationTester() {
     }
 
-    void testConfiguration(App app, Register register, Config config) {
-        testAppConfiguration(app);
-        testRegisterConfiguration(register);
-        testConfigConfiguration(config);
+    /**
+     * Check all properties files
+     * @param app
+     * @param register
+     * @param config
+     */
+    public void checkConfiguration(Application app, Register register, Config config) {
+        logger.debug("ConfigurationTester:checkConfiguration");
+        checkApplicationConfiguration(app);
+        checkRegisterConfiguration(register);
+        checkConfigConfiguration(config);
     }
 
-    public void testRegisterConfiguration(Register register) {
+    /**
+     * Check Register configuration
+     * @param register
+     */
+    public void checkRegisterConfiguration(Register register) {
+        logger.debug("ConfigurationTester:checkRegisterConfiguration");
         String msg = "Register %s can't be null, please check your config";
         Preconditions.checkNotNull(register.getHostName(), msg, "hostname");
         Preconditions.checkNotNull(register.getPort(), msg, "port");
     }
 
-    void testAppConfiguration(App app) {
-        String msg = "App %s can't be null, please check your config";
+    /**
+     * Check Application configuration
+     * @param app
+     */
+    void checkApplicationConfiguration(Application app) {
+        logger.debug("ConfigurationTester:checkApplicationConfiguration");
+        String msg = "Application %s can't be null, please check your config";
         Preconditions.checkNotNull(app.getHostName(), msg, "hostname");
         Preconditions.checkNotNull(app.getPort(), msg, "port");
         Preconditions.checkNotNull(app.getPriority(), msg, "priority");
@@ -41,7 +61,12 @@ public class ConfigurationTester {
         Preconditions.checkNotNull(app.getPath(), msg, "path");
     }
 
-    public void testConfigConfiguration(Config config) {
+    /**
+     * Check Config Configuration
+     * @param config
+     */
+    public void checkConfigConfiguration(Config config) {
+        logger.debug("ConfigurationTester:checkConfigConfiguration");
         String msg = "Config %s can't be null, please check your config";
         Preconditions.checkNotNull(config.getReloadChildrenDelay(), msg, "reloadChildrenDelay");
     }

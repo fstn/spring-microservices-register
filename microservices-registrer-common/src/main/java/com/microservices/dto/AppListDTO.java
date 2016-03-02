@@ -1,4 +1,6 @@
-package com.microservices.model;
+package com.microservices.dto;
+
+import com.microservices.model.application.Application;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -12,21 +14,21 @@ import java.util.List;
 public class AppListDTO {
 
     @XmlElement(name = "data")
-    private List<App> data;
+    private List<Application> data;
 
     public AppListDTO(){
 
     }
 
-    public AppListDTO(List<App> data) {
+    public AppListDTO(List<Application> data) {
         this.data = data;
     }
 
-    public List<App> getData() {
+    public List<Application> getData() {
         return data;
     }
 
-    public void setData(List<App> data) {
+    public void setData(List<Application> data) {
         this.data = data;
     }
 }

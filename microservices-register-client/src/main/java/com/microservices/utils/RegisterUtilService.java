@@ -1,10 +1,10 @@
 package com.microservices.utils;
 
 import com.microservices.ConfigurationTester;
-import com.microservices.RegisterInit;
-import com.microservices.model.App;
-import com.microservices.model.AppListDTO;
-import com.microservices.model.EndPoint;
+import com.microservices.RegisterThread;
+import com.microservices.model.application.Application;
+import com.microservices.dto.AppListDTO;
+import com.microservices.model.application.EndPoint;
 import com.microservices.model.Register;
 import com.microservices.producer.AppProducer;
 import com.microservices.producer.RegisterProducer;
@@ -38,13 +38,9 @@ public class RegisterUtilService<T> {
 
     @Inject
     private ChildrenWSUtilService<T> childrenWSUtilsService;
-    private App childApp;
-    private App currentApp;
 
+    private Application currentApp;
     private Register register;
-
-    private EndPoint endPoint;
-    private Object param;
 
     public RegisterUtilService() {
         super();
@@ -52,9 +48,10 @@ public class RegisterUtilService<T> {
 
     @PostConstruct
     public void init(){
+        logger.debug("RegisterUtilService:init");
         currentApp = appProducer.get();
         register = registerProducer.get();
-        configurationTester.testRegisterConfiguration(register);
+        configurationTester.checkRegisterConfiguration(register);
     }
 
     /**
@@ -62,8 +59,8 @@ public class RegisterUtilService<T> {
      * Required register.yml file inside your resource folder
      */
     public void register() {
-        logger.debug("Register");
-        RegisterInit registerInit = new RegisterInit(currentApp, register);
+        logger.debug("RegisterUtilService:register");
+        RegisterThread registerInit = new RegisterThread(currentApp, register);
         registerInit.start();
     }
 
@@ -72,7 +69,7 @@ public class RegisterUtilService<T> {
      * Required register.yml file inside your resource folder
      */
     public void unregister() {
-        logger.debug("Unregister");
+        logger.debug("RegisterUtilService:unregister");
         Response response = registerWSUtilsService.callUnregisterWS();
 
         if (!isOk(response)) {
@@ -86,8 +83,8 @@ public class RegisterUtilService<T> {
      *
      * @return
      */
-    public List<App> getChildren() {
-        logger.debug("Get children");
+    public List<Application> getChildren() {
+        logger.debug("RegisterUtilService:getChildren");
         AppListDTO result = null;
         try {
             result = (AppListDTO) registerWSUtilsService.callChildrenWS(AppListDTO.class);
@@ -108,11 +105,8 @@ public class RegisterUtilService<T> {
      * @param param
      * @return
      */
-    public T executeOnChild(App childApp, EndPoint endPoint, T param) {
-        this.childApp = childApp;
-        this.endPoint = endPoint;
-        this.param = param;
-        logger.debug("Call child " + childApp + ", " + endPoint);
+    public T executeOnChild(Application childApp, EndPoint endPoint, T param) {
+        logger.debug("RegisterUtilService:executeOnChild "+ childApp + ", " + endPoint);
         T result = param;
         // execute only on child that have same endPoints
         if (childApp.getEndPoints().contains(endPoint)) {

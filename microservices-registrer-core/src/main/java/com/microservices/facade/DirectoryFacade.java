@@ -1,6 +1,6 @@
 package com.microservices.facade;
 
-import com.microservices.model.App;
+import com.microservices.model.application.Application;
 import com.microservices.model.Directory;
 
 import javax.inject.Inject;
@@ -26,13 +26,13 @@ public class DirectoryFacade {
     /**
      * find registered app by id
      * @param appID application ID
-     * @return App
+     * @return Application
      */
-    public Optional<App> findRegisteredById(String appID) {
-        Optional<App> result;
+    public Optional<Application> findRegisteredById(String appID) {
+        Optional<Application> result;
 
         if(appID == null){
-            throw new RuntimeException("AppId can't be null to find a App in Directory");
+            throw new RuntimeException("AppId can't be null to find a Application in Directory");
         }
 
         result = directory.getRegisteredApps().stream().filter(app -> (
@@ -43,9 +43,9 @@ public class DirectoryFacade {
 
     /**
      * Get all registered apps
-     * @return App
+     * @return Application
      */
-    public List<App> getAllRegistered() {
+    public List<Application> getAllRegistered() {
         return directory.getRegisteredApps();
     }
 
@@ -53,9 +53,9 @@ public class DirectoryFacade {
      * Register an app
      * @param app app to register
      */
-    public void register(App app) {
+    public void register(Application app) {
         if(app == null){
-            throw new RuntimeException("Can't register a null App");
+            throw new RuntimeException("Can't register a null Application");
         }
         // remove existing app
         if( directory.getRegisteredApps().contains(app)){
@@ -71,13 +71,13 @@ public class DirectoryFacade {
      * Find registered app by using ID and instanceID
      * @param appID application ID
      * @param instanceID instance ID
-     * @return App app
+     * @return Application app
      */
-    public Optional<App> findRegisteredByIdAndInstanceId(String appID, String instanceID) {
-        Optional<App> result;
+    public Optional<Application> findRegisteredByIdAndInstanceId(String appID, String instanceID) {
+        Optional<Application> result;
 
         if(appID == null || instanceID == null ){
-            throw new RuntimeException("AppId and instanceID can't be null to find a App in Directory");
+            throw new RuntimeException("AppId and instanceID can't be null to find a Application in Directory");
         }
         result = directory.getRegisteredApps().stream().
                 filter(app -> (
@@ -90,12 +90,12 @@ public class DirectoryFacade {
      * Find children with parent app ID
      * sort by priority DESC
      * @param appID application ID
-     * @return App app
+     * @return Application app
      */
-    public List<App> findRegisteredChildrenById(String appID) {
-        List<App> result;
+    public List<Application> findRegisteredChildrenById(String appID) {
+        List<Application> result;
         if(appID == null ){
-            throw new RuntimeException("AppId can't be null to find a App in Directory");
+            throw new RuntimeException("AppId can't be null to find a Application in Directory");
         }
         result = directory.getRegisteredApps().stream().
                 filter(app -> (app.getParentApp().equals(appID))).collect(Collectors.toList());

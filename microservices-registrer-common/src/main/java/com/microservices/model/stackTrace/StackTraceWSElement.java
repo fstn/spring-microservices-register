@@ -1,26 +1,31 @@
-package com.microservices.model;
+package com.microservices.model.stackTrace;
+
+import com.microservices.model.application.Application;
+import com.microservices.model.application.ApplicationInsideStackTrace;
+import com.microservices.model.application.EndPoint;
 
 /**
  * Created by stephen on 27/02/2016.
  */
 public class StackTraceWSElement {
 
-    private App app;
+    private ApplicationInsideStackTrace app;
     private EndPoint endPoint;
 
-    public StackTraceWSElement(App app, EndPoint endPoint) {
-        this.app = app;
+
+    public StackTraceWSElement(Application app, EndPoint endPoint) {
+        this.app = new ApplicationInsideStackTrace(app);
         this.endPoint = endPoint;
     }
 
     public StackTraceWSElement() {
     }
 
-    public App getApp() {
+    public ApplicationInsideStackTrace getApp() {
         return app;
     }
 
-    public void setApp(App app) {
+    public void setApp(ApplicationInsideStackTrace app) {
         this.app = app;
     }
 
@@ -50,4 +55,6 @@ public class StackTraceWSElement {
         result = 31 * result + (getEndPoint() != null ? getEndPoint().hashCode() : 0);
         return result;
     }
+
+
 }

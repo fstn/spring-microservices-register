@@ -1,8 +1,10 @@
 package com.microservices.utils;
 
-import com.microservices.model.App;
-import com.microservices.model.EndPoint;
+import com.microservices.model.application.Application;
+import com.microservices.model.application.EndPoint;
 import org.glassfish.jersey.jackson.JacksonFeature;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -16,18 +18,23 @@ import javax.ws.rs.core.MediaType;
 @Named
 @Singleton
 public class ChildrenWSUtilService<T> {
+
+    private static final Logger logger = LoggerFactory.getLogger(ChildrenWSUtilService.class);
     /**
      * @param app
      * @param endPoint
      * @param result
      * @return
      */
-    public T executeOnChildrenWS(App app, EndPoint endPoint, T result) {
+    public T executeOnChildrenWS(Application app, EndPoint endPoint, T result) {
 
         Client client = ClientBuilder.newBuilder().register(JacksonFeature.class).build();
+
         WebTarget target = client.target("http://" + app.getHostName() + ":"
                 + app.getPort());
         target = target.path( "/" +app.getPath()+"/"+ endPoint.getPath());
+
+        logger.debug("executeOnChildrenWS "+target.getUri().toString());
 
         Invocation.Builder builder = target.request();
         builder.accept(MediaType.APPLICATION_JSON);

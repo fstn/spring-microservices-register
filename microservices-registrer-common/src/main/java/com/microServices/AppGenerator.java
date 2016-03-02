@@ -1,14 +1,15 @@
 package com.microservices;
 
-import com.microservices.model.App;
-import com.microservices.model.EndPoint;
+import com.microservices.model.application.Application;
+import com.microservices.model.application.EndPoint;
 
 /**
  * Created by SZA on 01/03/2016.
+ * Use for test or mock
  */
 public class AppGenerator {
-    public static App build(int i) {
-        App app = new App();
+    public static Application build(int i) {
+        Application app = new Application();
         app.setPath("/"+i);
         app.setId("app"+i);
         app.setHostName("127.0.0.1");
