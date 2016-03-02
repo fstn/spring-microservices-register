@@ -63,4 +63,16 @@ public class Entity<T> {
     public void setStackError(List<StackTraceWSError> stackError) {
         this.stackError = stackError;
     }
+
+
+    @Override
+    public String toString() {
+        return "Entity{" +
+                "data=" + data +
+                ", stopAll=" + stopAll +
+                ", stopChildren=" + stopChildren +
+                ", stackTrace=" + stackTrace +
+                ", stackError=" + stackError +
+                '}';
+    }
 }

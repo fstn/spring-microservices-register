@@ -20,7 +20,7 @@ import javax.ws.rs.Produces;
 @Named
 @Path("/")
 public class WorldRestController {
-    private static final Logger logger = LoggerFactory.getLogger(WorldRestController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(WorldRestController.class);
 
     @Inject
     RegisterClient<EntityInvoice> registerClient;
@@ -36,11 +36,13 @@ public class WorldRestController {
     @Consumes("application/json")
     @Produces("application/json")
     public EntityInvoice validate(Object entity) {
+        LOGGER.info(String.format("Input entity is [%s]", entity));
         EntityInvoice resultEntity;
         resultEntity = new RestRegisterHelper<EntityInvoice>(registerClient, EntityInvoice.class) {
             @Override
             public EntityInvoice run(EntityInvoice entity) {
                 ((EntityInvoice) entity).getData().setWww("www.invoice.com");
+                LOGGER.info(String.format("Treating entity is [%s]", entity));
                 return entity;
             }
         }.execute(entity);

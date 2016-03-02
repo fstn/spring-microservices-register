@@ -30,12 +30,8 @@ public class DynamicFields {
      * Get dynamic fields
      * @return the dynamic fields
      */
-    public Map<String, Object> getDynamicFields() {
-        return dynamicFields;
-    }
-
     @JsonAnyGetter
-    public Map<String, Object> getProperties() {
+    public Map<String, Object> getDynamicFields() {
         return dynamicFields;
     }
 

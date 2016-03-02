@@ -44,4 +44,14 @@ public class Invoice extends DynamicFields{
     public void setWww(String www) {
         this.www = www;
     }
+
+    @Override
+    public String toString() {
+        return "Invoice{" +
+                "amount=" + amount +
+                ", id='" + id + '\'' +
+                ", tva=" + tva +
+                ", www='" + www + '\'' +
+                "} " + super.toString();
+    }
 }

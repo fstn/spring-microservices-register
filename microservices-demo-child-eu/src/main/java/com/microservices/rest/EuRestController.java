@@ -3,6 +3,7 @@ package com.microservices.rest;
 import com.microservices.RegisterClient;
 import com.microservices.RestRegisterHelper;
 import com.microservices.model.EntityInvoice;
+import com.microservices.model.Header;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,8 +20,8 @@ import javax.ws.rs.Produces;
 
 @Named
 @Path("/")
-public class RestController {
-    private static final Logger logger = LoggerFactory.getLogger(RestController.class);
+public class EuRestController {
+    private static final Logger LOGGER = LoggerFactory.getLogger(EuRestController.class);
 
     @Inject
     RegisterClient<EntityInvoice> registerClient;
@@ -35,14 +36,29 @@ public class RestController {
     @Consumes("application/json")
     @Produces("application/json")
     public EntityInvoice validate(Object entity) {
+
+        LOGGER.info(String.format("Input entity is [%s]", entity));
+
         EntityInvoice resultEntity;
         resultEntity = new RestRegisterHelper<EntityInvoice>(registerClient, EntityInvoice.class){
             @Override
             public EntityInvoice run(EntityInvoice entity) {
                 ((EntityInvoice)entity).getData().setTvaIntraCom("10.5");
+
+                Header header = ((EntityInvoice) entity).getData().getHeader();
+                if(header == null){
+                    header = new Header();
+                    ((EntityInvoice) entity).getData().setHeader(header);
+                }
+                header.setEuCovention("Europe Convention description");
+                header.setEuId("EU145485421");
+
+
+
                 return entity;
             }
         }.execute(entity);
+
         return resultEntity;
     }
 

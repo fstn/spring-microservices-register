@@ -1,6 +1,6 @@
 package com.microservices;
 
-import com.microservices.rest.RestController;
+import com.microservices.rest.FrRestController;
 import org.glassfish.jersey.server.ResourceConfig;
 
 import javax.inject.Named;
@@ -15,6 +15,6 @@ public class JerseyConfig extends ResourceConfig {
     }
 
     private void registerEndpoints() {
-        register(RestController.class);
+        register(FrRestController.class);
     }
 }

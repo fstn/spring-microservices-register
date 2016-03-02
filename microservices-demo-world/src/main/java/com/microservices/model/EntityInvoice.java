@@ -6,4 +6,8 @@ package com.microservices.model;
 
 
 public class EntityInvoice extends Entity<Invoice> {
+    @Override
+    public String toString() {
+        return "EntityInvoice{} " + super.toString();
+    }
 }
