@@ -1,10 +1,9 @@
 package com.microservices;
 
-import com.microservices.model.App;
-import com.microservices.model.EndPoint;
-import com.microservices.model.Entity;
-import com.microservices.model.StackTraceWSElement;
+import com.microservices.model.*;
 import com.microservices.utils.RegisterUtilService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -25,12 +24,13 @@ import java.util.List;
 @EnableScheduling
 public class RegisterClient<T> {
 
+    private static final Logger logger = LoggerFactory.getLogger(RegisterClient.class);
     @Inject
     ConfigurationTester configurationTester;
-
     @Inject
     RegisterUtilService<T> registerUtil;
-
+    @Inject
+    Config config;
     @Inject
     App app;
     /**
@@ -41,9 +41,9 @@ public class RegisterClient<T> {
     @PostConstruct
     public void init() {
         //test configuration file
-        configurationTester.testConfiguration();
-        registerUtil.register();
-        getChildren();
+            configurationTester.testConfiguration();
+            registerUtil.register();
+            getChildren();
     }
 
     @PreDestroy
@@ -53,8 +53,7 @@ public class RegisterClient<T> {
 
     @Scheduled(fixedDelayString  = "${config.heartBeatDelay}")
     public void getChildren() {
-        // get childs
-        childrenApp = registerUtil.getChildren().getData();
+            childrenApp = registerUtil.getChildren();
     }
     /**
      * Add StackCall inside entity
@@ -74,7 +73,7 @@ public class RegisterClient<T> {
      */
     public EndPoint getEndPoint(Class localClass) {
         Method m = localClass.getEnclosingMethod();
-        String path = ((Path)m.getAnnotationsByType(Path.class)[0]).value();
+        String path = m.getAnnotationsByType(Path.class)[0].value();
         String method = null;
         if(m.isAnnotationPresent(POST.class)) {
             method = HttpMethod.POST;

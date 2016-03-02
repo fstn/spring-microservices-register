@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
+import java.util.List;
 
 /**
  * Created by stephen on 27/02/2016.
@@ -67,15 +68,16 @@ public class RegisterUtilService<T> {
      *
      * @return
      */
-    public AppListDTO getChildren() {
+    public List<App> getChildren() {
         logger.debug("Get children");
         AppListDTO result = null;
         try {
             result = (AppListDTO) registerWSUtilsService.callChildrenWS(AppListDTO.class);
         }catch (Exception ex){
-            throw new RuntimeException("Unable to getChildren application " + currentApp.getApp() + " " );
+            logger.error("From "+currentApp.getApp()+": Unable to getChildren application ",ex);
+            return null;
         }
-        return result;
+        return result.getData();
     }
 
     /**

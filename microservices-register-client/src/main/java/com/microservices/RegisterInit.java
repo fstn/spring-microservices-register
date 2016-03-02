@@ -12,11 +12,11 @@ import java.util.logging.Logger;
 
 public class RegisterInit extends Thread {
 
+	private static final Logger log = Logger.getLogger(RegisterInit.class
+			.getName());
 	private App currentApp;
 	private Register register;
 	private boolean registered = false;
-	private static final Logger log = Logger.getLogger(RegistrerConfig.class
-			.getName());
 
 	public RegisterInit(App currentApp,Register register) {
 		super();
@@ -43,21 +43,19 @@ public class RegisterInit extends Thread {
 			Invocation.Builder builder = target.request();
 
 
-			Response response = builder.post(Entity.json(currentApp));
-
-			if (response.getStatus() == 200 || response.getStatus() == 204) {
-				registered = true;
-			}else{
+			try {
+				Response response = builder.post(Entity.json(currentApp));
+			}catch (Exception e){
 				try {
 					Thread.sleep(2000);
-				} catch (InterruptedException e) {
+				} catch (InterruptedException ex) {
 					log.log(Level.SEVERE, "error " + currentApp.getApp());
 				}
 			}
 		}
 
 		if (!registered) {
-			throw new RuntimeException("Unable to find parent API "
+			throw new RuntimeException("From "+currentApp.getApp()+": Unable to find parent API "
 					+ currentApp.getApp());
 		}
 	}
