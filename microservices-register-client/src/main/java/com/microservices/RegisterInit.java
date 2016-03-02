@@ -3,7 +3,6 @@ package com.microservices;
 import com.microservices.model.App;
 import com.microservices.model.Register;
 import org.glassfish.jersey.jackson.JacksonFeature;
-import org.springframework.scheduling.annotation.Scheduled;
 
 import javax.ws.rs.client.*;
 import javax.ws.rs.core.Response;
@@ -24,21 +23,14 @@ public class RegisterInit extends Thread {
 		this.register = register;
 	}
 
-    @Scheduled(fixedRate = 1000)
-    public void reportCurrentTime() {
-        System.out.println("The time is now " );
-    }
-
 	public void run() {
 		int currentTry = 0;
 		while (!registered && currentTry < 100) {
 			currentTry++;
-
-
 			Client client = ClientBuilder.newBuilder().register(JacksonFeature.class).build();
 			WebTarget target = client.target("http://"+register.getHostName()+":"
 					+register.getPort());
-			target = target.path("/apps/"+currentApp.getApp());
+			target = target.path("/apps/"+currentApp.getId());
 
 			Invocation.Builder builder = target.request();
 
@@ -49,14 +41,9 @@ public class RegisterInit extends Thread {
 				try {
 					Thread.sleep(2000);
 				} catch (InterruptedException ex) {
-					log.log(Level.SEVERE, "error " + currentApp.getApp());
+					log.log(Level.SEVERE, "error " + currentApp.getId());
 				}
 			}
-		}
-
-		if (!registered) {
-			throw new RuntimeException("From "+currentApp.getApp()+": Unable to find parent API "
-					+ currentApp.getApp());
 		}
 	}
 }

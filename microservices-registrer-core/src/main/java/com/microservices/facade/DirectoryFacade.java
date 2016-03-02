@@ -36,7 +36,7 @@ public class DirectoryFacade {
         }
 
         result = directory.getRegisteredApps().stream().filter(app -> (
-                app.getApp().equals(appID))).findFirst();
+                app.getId().equals(appID))).findFirst();
 
         return result;
     }
@@ -81,7 +81,7 @@ public class DirectoryFacade {
         }
         result = directory.getRegisteredApps().stream().
                 filter(app -> (
-                        app.getApp().equals(appID) && app.getInstanceID().equals(instanceID))).findFirst();
+                        app.getId().equals(appID) && app.getInstanceId().equals(instanceID))).findFirst();
 
         return result;
     }

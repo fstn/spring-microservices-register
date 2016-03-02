@@ -1,7 +1,5 @@
 package com.microservices.model;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
-
 import javax.inject.Named;
 
 /**
@@ -9,7 +7,6 @@ import javax.inject.Named;
  */
 
 @Named
-@ConfigurationProperties(locations = "classpath:register.yml",prefix = "register")
 public class Register {
     /**
      * Hostname

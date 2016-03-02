@@ -2,7 +2,6 @@ package com.microservices;
 
 import com.microservices.api.rest.RegisterController;
 import org.glassfish.jersey.server.ResourceConfig;
-
 import javax.inject.Named;
 
 /**

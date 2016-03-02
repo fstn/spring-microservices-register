@@ -10,10 +10,10 @@ public class AppGenerator {
     public static App build(int i) {
         App app = new App();
         app.setPath("/"+i);
-        app.setApp("app"+i);
+        app.setId("app"+i);
         app.setHostName("127.0.0.1");
         app.setPort(8080+i);
-        app.setInstanceID("1");
+        app.setInstanceId("1");
         app.setPriority(300.0+i);
         app.getEndPoints().add(new EndPoint("POST","path"));
         return app;

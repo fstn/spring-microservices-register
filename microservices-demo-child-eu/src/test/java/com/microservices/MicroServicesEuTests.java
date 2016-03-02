@@ -85,7 +85,7 @@ public class MicroServicesEuTests {
 
     @Test
     public void contextLoads() {
-        Assert.assertEquals("eu", app.getApp());
+        Assert.assertEquals("eu", app.getId());
         Assert.assertEquals("127.0.0.1", app.getHostName());
         Assert.assertEquals((Integer) 8093, app.getPort());
         Assert.assertEquals("POST", app.getEndPoints().get(0).getMethod());

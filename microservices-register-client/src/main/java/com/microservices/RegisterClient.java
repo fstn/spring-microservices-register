@@ -1,6 +1,8 @@
 package com.microservices;
 
 import com.microservices.model.*;
+import com.microservices.producer.AppProducer;
+import com.microservices.producer.ConfigProducer;
 import com.microservices.utils.RegisterUtilService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,9 +31,13 @@ public class RegisterClient<T> {
     @Inject
     RegisterUtilService<T> registerUtil;
     @Inject
-    Config config;
+    ConfigProducer configProducer;
     @Inject
-    App app;
+    AppProducer appProducer;
+
+
+    private App app;
+    private Config config;
     /**
      * Children list
      */
@@ -39,16 +45,19 @@ public class RegisterClient<T> {
 
     @PostConstruct
     public void init() {
+        app = appProducer.get();
+        config = configProducer.get();
         //test configuration file
-            configurationTester.testConfiguration();
-            registerUtil.register();
-            Timer timer = new Timer();
-            timer.schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    childrenApp = registerUtil.getChildren();
-                }
-            }, 0, 5000);
+        configurationTester.testAppConfiguration(app);
+        configurationTester.testConfigConfiguration(config);
+        registerUtil.register();
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                childrenApp = registerUtil.getChildren();
+            }
+        }, 0, config.getReloadChildrenDelay());
     }
 
     @PreDestroy
@@ -58,17 +67,19 @@ public class RegisterClient<T> {
 
     /**
      * Add StackCall inside entity
+     *
      * @param entity
      * @param endPoint
      * @return
      */
     public Entity addStackCall(Entity entity, EndPoint endPoint) {
-        entity.getStackTrace().add(new StackTraceWSElement(app,endPoint));
+        entity.getStackTrace().add(new StackTraceWSElement(app, endPoint));
         return entity;
     }
 
     /**
      * Return endPoint that match with method
+     *
      * @param localClass
      * @return
      */
@@ -76,16 +87,16 @@ public class RegisterClient<T> {
         Method m = localClass.getEnclosingMethod();
         String path = m.getAnnotationsByType(Path.class)[0].value();
         String method = null;
-        if(m.isAnnotationPresent(POST.class)) {
+        if (m.isAnnotationPresent(POST.class)) {
             method = HttpMethod.POST;
-        }else if(m.isAnnotationPresent(GET.class)) {
+        } else if (m.isAnnotationPresent(GET.class)) {
             method = HttpMethod.GET;
-        }else if(m.isAnnotationPresent(PUT.class)) {
+        } else if (m.isAnnotationPresent(PUT.class)) {
             method = HttpMethod.PUT;
-        }else if(m.isAnnotationPresent(DELETE.class)) {
+        } else if (m.isAnnotationPresent(DELETE.class)) {
             method = HttpMethod.DELETE;
         }
-        EndPoint endPoint = new EndPoint(path, method) ;
+        EndPoint endPoint = new EndPoint(path, method);
         return endPoint;
     }
 

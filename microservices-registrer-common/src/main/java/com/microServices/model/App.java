@@ -1,18 +1,16 @@
 package com.microservices.model;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
-
 import javax.inject.Named;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * App representation yml
  */
 
 @Named
-@ConfigurationProperties(locations = "classpath:register.yml", prefix = "app")
 @XmlRootElement
 public class App {
 
@@ -21,15 +19,15 @@ public class App {
      * <p/>
      * Example world, fr, eur ..
      */
-    private String app;
+    private String id;
     /**
      * App context path
      * <p/>
-     * Example /app
+     * Example /id
      */
     private String path;
     /**
-     * Parent app name
+     * Parent id name
      * <p/>
      * Example world, fr, eur ..
      */
@@ -49,13 +47,13 @@ public class App {
      */
     private Integer port;
     /**
-     * App instanceID (use if multiple service deployed with same instanceID)
+     * App instanceId (use if multiple service deployed with same instanceId)
      */
-    private String instanceID;
+    private String instanceId;
     /**
      * App available endPoints
      */
-    private ArrayList<EndPoint> endPoints;
+    private List<EndPoint> endPoints;
     /**
      * App last update
      */
@@ -73,12 +71,12 @@ public class App {
 
     private Double priority;
 
-    public String getApp() {
-        return app;
+    public String getId() {
+        return id;
     }
 
-    public void setApp(String app) {
-        this.app = app;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getParentApp() {
@@ -113,19 +111,19 @@ public class App {
         this.port = port;
     }
 
-    public String getInstanceID() {
-        return instanceID;
+    public String getInstanceId() {
+        return instanceId;
     }
 
-    public void setInstanceID(String instanceID) {
-        this.instanceID = instanceID;
+    public void setInstanceId(String instanceId) {
+        this.instanceId = instanceId;
     }
 
-    public ArrayList<EndPoint> getEndPoints() {
+    public List<EndPoint> getEndPoints() {
         return endPoints;
     }
 
-    public void setEndPoints(ArrayList<EndPoint> endPoints) {
+    public void setEndPoints(List<EndPoint> endPoints) {
         this.endPoints = endPoints;
     }
 
@@ -162,26 +160,26 @@ public class App {
 
         App app1 = (App) o;
 
-        return getApp() != null ? getApp().equals(app1.getApp()) : app1.getApp() == null && (getInstanceID() != null ? getInstanceID().equals(app1.getInstanceID()) : app1.getInstanceID() == null);
+        return getId() != null ? getId().equals(app1.getId()) : app1.getId() == null && (getInstanceId() != null ? getInstanceId().equals(app1.getInstanceId()) : app1.getInstanceId() == null);
 
     }
 
     @Override
     public int hashCode() {
-        int result = getApp() != null ? getApp().hashCode() : 0;
-        result = 31 * result + (getInstanceID() != null ? getInstanceID().hashCode() : 0);
+        int result = getId() != null ? getId().hashCode() : 0;
+        result = 31 * result + (getInstanceId() != null ? getInstanceId().hashCode() : 0);
         return result;
     }
 
     @Override
     public String toString() {
         return "App{" +
-                "app='" + app + '\'' +
+                "id='" + id + '\'' +
                 ", parentApp='" + parentApp + '\'' +
                 ", hostName='" + hostName + '\'' +
                 ", status=" + status +
                 ", port=" + port +
-                ", instanceID='" + instanceID + '\'' +
+                ", instanceId='" + instanceId + '\'' +
                 ", endPoints=" + endPoints +
                 '}';
     }

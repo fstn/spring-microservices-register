@@ -9,12 +9,9 @@ import com.microservices.model.EndPoint;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.inject.Inject;
 import javax.ws.rs.HttpMethod;
@@ -31,8 +28,8 @@ import static org.mockito.Mockito.when;
  * Tests
  */
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = MicroServiceRegisterApplication.class)
+//@RunWith(SpringJUnit4ClassRunner.class)
+//@SpringApplicationConfiguration(classes = MicroServiceRegisterApplication.class)
 public class MicroServiceRegisterApplicationTests {
 
     @Inject
@@ -61,15 +58,15 @@ public class MicroServiceRegisterApplicationTests {
 
         childApp = new App();
         childApp.setPath("/eu/rest");
-        childApp.setApp("eu");
+        childApp.setId("eu");
         childApp.setHostName("127.0.0.1");
         childApp.setPort(8080);
-        childApp.setInstanceID("1");
+        childApp.setInstanceId("1");
         childApp.setPriority(200.0);
         ArrayList<EndPoint> endPoints = new ArrayList<>();
         endPoints.add(new EndPoint("validate", HttpMethod.POST));
         childApp.setEndPoints(endPoints);
-        childApp.setParentApp(parentApp.getApp());
+        childApp.setParentApp(parentApp.getId());
     }
 
     @After
@@ -83,7 +80,7 @@ public class MicroServiceRegisterApplicationTests {
         directoryFacade.register(parentApp);
         List<App> registerApps = directory.getRegisteredApps();
         assertEquals("There is one registered parentApp", 1, registerApps.size());
-        assertEquals("My parentApp is registered", parentApp.getApp(), registerApps.get(0).getApp());
+        assertEquals("My parentApp is registered", parentApp.getId(), registerApps.get(0).getId());
         Date oldLastUpdate = registerApps.get(0).getLastUpdate();
 
         //register second time the same parentApp
@@ -91,7 +88,7 @@ public class MicroServiceRegisterApplicationTests {
         directoryFacade.register(parentApp);
         registerApps = directory.getRegisteredApps();
         assertEquals("There is one registered parentApp", 1, registerApps.size());
-        assertEquals("My parentApp is registered", parentApp.getApp(), registerApps.get(0).getApp());
+        assertEquals("My parentApp is registered", parentApp.getId(), registerApps.get(0).getId());
         assertNotEquals("LastUpdated must have changed", oldLastUpdate, registerApps.get(0).getLastUpdate());
     }
 
@@ -100,9 +97,9 @@ public class MicroServiceRegisterApplicationTests {
     public void findById() throws InterruptedException {
         directory.setRegisteredApp(new ArrayList<>());
         registerApp();
-        Optional<App> registeredApp = directoryFacade.findRegisteredById(parentApp.getApp());
+        Optional<App> registeredApp = directoryFacade.findRegisteredById(parentApp.getId());
         assertTrue("Found a registered parentApp", registeredApp.isPresent());
-        assertEquals("My parentApp is registered", parentApp.getApp(), registeredApp.get().getApp());
+        assertEquals("My parentApp is registered", parentApp.getId(), registeredApp.get().getId());
 
     }
 
@@ -130,9 +127,9 @@ public class MicroServiceRegisterApplicationTests {
         directory.setRegisteredApp(new ArrayList<>());
         directoryFacade.register(parentApp);
         directoryFacade.register(childApp);
-        List<App> registeredChildren = directoryFacade.findRegisteredChildrenById(parentApp.getApp());
+        List<App> registeredChildren = directoryFacade.findRegisteredChildrenById(parentApp.getId());
         assertEquals("There is one registered childApp", 1, registeredChildren.size());
-        assertEquals("My childApp is a child", childApp.getApp(), registeredChildren.get(0).getApp());
+        assertEquals("My childApp is a child", childApp.getId(), registeredChildren.get(0).getId());
     }
 
     @Test
@@ -140,19 +137,19 @@ public class MicroServiceRegisterApplicationTests {
 
         App childApp2 = new App();
         childApp2.setPath("/us/rest");
-        childApp2.setApp("usa");
+        childApp2.setId("usa");
         childApp2.setHostName("127.0.0.1");
         childApp2.setPort(8080);
-        childApp2.setInstanceID("1");
+        childApp2.setInstanceId("1");
         childApp2.setPriority(300.0);
         ArrayList<EndPoint> endPoints = new ArrayList<>();
         endPoints.add(new EndPoint("validate", HttpMethod.POST));
         childApp2.setEndPoints(endPoints);
-        childApp2.setParentApp(parentApp.getApp());
+        childApp2.setParentApp(parentApp.getId());
         directoryFacade.register(childApp2);
-        List<App> registeredChildren = directoryFacade.findRegisteredChildrenById(parentApp.getApp());
+        List<App> registeredChildren = directoryFacade.findRegisteredChildrenById(parentApp.getId());
         assertEquals("There is one registered childApp", 1, registeredChildren.size());
-        assertEquals("My childApp is  childApp2 because priority is bigger", childApp2.getApp(), registeredChildren.get(0).getApp());
+        assertEquals("My childApp is  childApp2 because priority is bigger", childApp2.getId(), registeredChildren.get(0).getId());
     }
 
 }

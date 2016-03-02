@@ -1,13 +1,17 @@
 package com.microservices.utils;
 
+import com.microservices.ConfigurationTester;
 import com.microservices.RegisterInit;
 import com.microservices.model.App;
 import com.microservices.model.AppListDTO;
 import com.microservices.model.EndPoint;
 import com.microservices.model.Register;
+import com.microservices.producer.AppProducer;
+import com.microservices.producer.RegisterProducer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.ws.rs.core.Response;
@@ -21,22 +25,36 @@ public class RegisterUtilService<T> {
     private static final Logger logger = LoggerFactory.getLogger(RegisterUtilService.class);
 
     @Inject
-    public com.microservices.utils.RegisterWSUtilService registerWSUtilsService;
+    ConfigurationTester configurationTester;
 
     @Inject
-    public App currentApp;
+    public RegisterWSUtilService registerWSUtilsService;
 
     @Inject
-    public Register register;
+    public AppProducer appProducer;
+
+    @Inject
+    public RegisterProducer registerProducer;
 
     @Inject
     private ChildrenWSUtilService<T> childrenWSUtilsService;
     private App childApp;
+    private App currentApp;
+
+    private Register register;
+
     private EndPoint endPoint;
     private Object param;
 
     public RegisterUtilService() {
         super();
+    }
+
+    @PostConstruct
+    public void init(){
+        currentApp = appProducer.get();
+        register = registerProducer.get();
+        configurationTester.testRegisterConfiguration(register);
     }
 
     /**
@@ -58,7 +76,7 @@ public class RegisterUtilService<T> {
         Response response = registerWSUtilsService.callUnregisterWS();
 
         if (!isOk(response)) {
-            throw new RuntimeException("Unable to unRegister application " + currentApp.getApp());
+            throw new RuntimeException("Unable to unRegister application " + currentApp.getId());
         }
     }
 
@@ -74,7 +92,7 @@ public class RegisterUtilService<T> {
         try {
             result = (AppListDTO) registerWSUtilsService.callChildrenWS(AppListDTO.class);
         }catch (Exception ex){
-            logger.error("From "+currentApp.getApp()+": Unable to getChildren application ",ex);
+            logger.error("From "+currentApp.getId()+": Unable to getChildren application ",ex);
             return null;
         }
         return result.getData();
@@ -100,10 +118,10 @@ public class RegisterUtilService<T> {
             try {
                 result = childrenWSUtilsService.executeOnChildrenWS(childApp, endPoint, result);
             } catch (Exception e) {
-                logger.error("From Application "+currentApp.getApp()+":"+currentApp.getInstanceID()
-                        +" Unable to execute endPoint on children application " + childApp.getApp()+":"+childApp.getInstanceID() +
+                logger.error("From Application "+currentApp.getId()+":"+currentApp.getInstanceId()
+                        +" Unable to execute endPoint on children application " + childApp.getId()+":"+childApp.getInstanceId() +
                         " " + endPoint + " ", e);
-                throw e;
+                throw new RuntimeException(e);
             }
         }
         return result;

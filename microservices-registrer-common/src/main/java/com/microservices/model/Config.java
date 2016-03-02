@@ -1,7 +1,5 @@
 package com.microservices.model;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
-
 import javax.inject.Named;
 
 /**
@@ -9,7 +7,6 @@ import javax.inject.Named;
  * Register config class
  */
 @Named
-@ConfigurationProperties(prefix = "config")
 public class Config {
 
     /**
@@ -20,6 +17,10 @@ public class Config {
      * Registered app max TTL in millisecond
      */
     private Integer appTTL;
+    /**
+     * reload children delay
+     */
+    private Integer reloadChildrenDelay;
 
     public Integer getCleaningDelay() {
         return cleaningDelay;
@@ -35,5 +36,13 @@ public class Config {
 
     public void setAppTTL(Integer appTTL) {
         this.appTTL = appTTL;
+    }
+
+    public void setReloadChildrenDelay(Integer reloadChildrenDelay) {
+        this.reloadChildrenDelay = reloadChildrenDelay;
+    }
+
+    public Integer getReloadChildrenDelay() {
+        return reloadChildrenDelay;
     }
 }

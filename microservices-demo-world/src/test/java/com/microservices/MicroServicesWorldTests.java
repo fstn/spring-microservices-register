@@ -98,7 +98,7 @@ public class MicroServicesWorldTests {
 	}
 	@Test
 	public void contextLoads() {
-		Assert.assertEquals("world", app.getApp());
+		Assert.assertEquals("world", app.getId());
 		Assert.assertEquals("127.0.0.1", app.getHostName());
 		Assert.assertEquals((Integer) 8080, app.getPort());
 		Assert.assertEquals("POST", app.getEndPoints().get(0).getMethod());

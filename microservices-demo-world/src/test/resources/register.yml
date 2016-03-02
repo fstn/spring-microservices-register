@@ -1,12 +1,12 @@
-app:
- app: world
+id:
+ id: world
  parentApp: api
  hostName: 127.0.0.1
  status: STARTING
  port: 8080
  priority: 12
  path: /
- instanceID: 1
+ instanceId: 1
  endPoints:
       -
           path: validate

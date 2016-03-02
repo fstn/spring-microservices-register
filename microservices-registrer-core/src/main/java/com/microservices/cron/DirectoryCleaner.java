@@ -1,13 +1,15 @@
 package com.microservices.cron;
 
-import com.microservices.model.Config;
 import com.microservices.model.Directory;
-import org.springframework.scheduling.annotation.Scheduled;
+import com.microservices.producer.ConfigProducer;
 
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 import java.util.Calendar;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.stream.Collectors;
 
 /**
@@ -22,12 +24,23 @@ public class DirectoryCleaner {
     Directory directory;
 
     @Inject
-    Config config;
+    ConfigProducer configProducer;
 
-    @Scheduled(fixedDelayString = "${config.cleaningDelay}")
+    @PostConstruct
+    public void init(){
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                clean();
+            }
+        }, 0, configProducer.get().getCleaningDelay());
+    }
+
+    //@Scheduled(fixedDelayString = "${config.cleaningDelay}")
     public void clean() {
         Calendar maxOlderAppCal = Calendar.getInstance();
-        maxOlderAppCal.add(Calendar.MILLISECOND, -config.getAppTTL());
+        maxOlderAppCal.add(Calendar.MILLISECOND, -configProducer.get().getAppTTL());
         //remove old apps from directory
         synchronized (directory.getRegisteredApps()) {
             directory.setRegisteredApp(
