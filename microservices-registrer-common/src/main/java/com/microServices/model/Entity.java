@@ -1,7 +1,9 @@
 package com.microservices.model;
 
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.microservices.StackTraceWSError;
+import com.microservices.serializer.DynamicSerializer;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;

@@ -4,6 +4,7 @@ import com.microservices.model.App;
 import com.microservices.model.EndPoint;
 import com.microservices.model.Entity;
 import com.microservices.model.StackTraceWSElement;
+import com.microservices.serializer.DynamicSerializer;
 
 /**
  * Created by SZA on 29/02/2016.
@@ -16,10 +17,12 @@ public abstract class RestRegisterHelper<T> {
     RegisterClient<T> registerClient;
     private Double currentEndPointPriority = 100.0;
     private boolean currentEndPointDone = false;
+    private DynamicSerializer<Object, T> dynamicSerializer;
+    private Class<T> classType;
 
-
-    public RestRegisterHelper(RegisterClient<T> registerClient) {
+    public RestRegisterHelper(RegisterClient<T> registerClient, Class<T> classType) {
         this.registerClient = registerClient;
+        this.dynamicSerializer =  new DynamicSerializer<>(Object.class,classType);
     }
 
     public abstract T run(T entity);
@@ -29,27 +32,29 @@ public abstract class RestRegisterHelper<T> {
      * @param entity
      * @return
      */
-    public T execute(T entity){
+    public T execute(Object entity){
+        T transformedEntity = this.dynamicSerializer.transform(entity);
+
         EndPoint endPoint = registerClient.getEndPoint(this.getClass());
         for(App client: registerClient.getChildrenApp()){
 
-            if(((Entity)entity).isStopChildren() || ((Entity)entity).isStopAll()){
-                ((Entity)entity).setStopChildren(false);
+            if(((Entity)transformedEntity).isStopChildren() || ((Entity)transformedEntity).isStopAll()){
+                ((Entity)transformedEntity).setStopChildren(false);
                 break;
             }
             if(client.getPriority() >= currentEndPointPriority && !currentEndPointDone){
-                entity = executeCurrentEndPoint(entity, endPoint);
+                transformedEntity = executeCurrentEndPoint(transformedEntity, endPoint);
             }
             try {
-                entity = registerClient.getRegisterUtil().executeOnChild(client, endPoint, entity);
+                transformedEntity = registerClient.getRegisterUtil().executeOnChild(client, endPoint, transformedEntity);
             }catch(Exception e){
-                ((Entity)entity).getStackError().add(new StackTraceWSError(client,endPoint,e))  ;
+                ((Entity)transformedEntity).getStackError().add(new StackTraceWSError(client,endPoint,e))  ;
             }
         }
-        if(! currentEndPointDone && !((Entity)entity).isStopAll()){
-            entity =  executeCurrentEndPoint(entity, endPoint);
+        if(! currentEndPointDone && !((Entity)transformedEntity).isStopAll()){
+            transformedEntity =  executeCurrentEndPoint(transformedEntity, endPoint);
         }
-        return entity;
+        return transformedEntity;
     }
 
     /**

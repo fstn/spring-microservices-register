@@ -1,16 +1,13 @@
 package com.microservices.model;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * Created by stephen on 27/02/2016.
  */
-public class Invoice {
+public class Invoice extends DynamicFields {
     private Double amount;
     private String id;
     private Double tva;
-    private Map<String,Object> dynamicField = new HashMap<>();
+    private String tvaIntraCom;
 
     public Double getAmount() {
         return amount;
@@ -36,11 +33,11 @@ public class Invoice {
         this.tva = tva;
     }
 
-    public Map<String, Object> getDynamicField() {
-        return dynamicField;
+    public String getTvaIntraCom() {
+        return tvaIntraCom;
     }
 
-    public void setDynamicField(Map<String, Object> dynamicField) {
-        this.dynamicField = dynamicField;
+    public void setTvaIntraCom(String tvaIntraCom) {
+        this.tvaIntraCom = tvaIntraCom;
     }
 }

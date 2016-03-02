@@ -102,10 +102,10 @@ public class RestHelperTests {
     public void stopInvoice() {
         registerClient.setChildrenApp(childrenApps);
         EntityInvoice testInvoice = invoiceEntity;
-        testInvoice = new RestRegisterHelper<EntityInvoice>(registerClient) {
+        testInvoice = new RestRegisterHelper<EntityInvoice>(registerClient, EntityInvoice.class) {
             @Override
             public EntityInvoice run(EntityInvoice entity) {
-                ((EntityInvoice) entity).getData().getDynamicField().put("TVA_INTRACOM", 10.5);
+                ((EntityInvoice) entity).getData().setTvaIntraCom("10.5");
                 return entity;
             }
         }.execute(testInvoice);
@@ -118,10 +118,10 @@ public class RestHelperTests {
 
         Assert.assertEquals(true, testInvoice.isStopChildren());
         testInvoice.setStackTrace(new ArrayList<>());
-        testInvoice = new RestRegisterHelper<EntityInvoice>(registerClient) {
+        testInvoice = new RestRegisterHelper<EntityInvoice>(registerClient, EntityInvoice.class) {
             @Override
             public EntityInvoice run(EntityInvoice entity) {
-                ((EntityInvoice) entity).getData().getDynamicField().put("TVA_INTRACOM", 10.5);
+                ((EntityInvoice) entity).getData().setTvaIntraCom("10.5");
                 return entity;
             }
         }.execute(testInvoice);

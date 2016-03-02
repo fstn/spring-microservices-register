@@ -34,15 +34,16 @@ public class RestController {
     @Path("validate")
     @Consumes("application/json")
     @Produces("application/json")
-    public EntityInvoice validate(EntityInvoice entity) {
-        entity = new RestRegisterHelper<EntityInvoice>(registerClient){
+    public EntityInvoice validate(Object entity) {
+        EntityInvoice resultEntity;
+        resultEntity = new RestRegisterHelper<EntityInvoice>(registerClient, EntityInvoice.class){
             @Override
             public EntityInvoice run(EntityInvoice entity) {
-                ((EntityInvoice)entity).getData().getDynamicField().put("TVA_INTRACOM",10.5);
+                ((EntityInvoice)entity).getData().setTvaIntraCom("10.5");
                 return entity;
             }
         }.execute(entity);
-        return entity;
+        return resultEntity;
     }
 
     /**
@@ -54,17 +55,17 @@ public class RestController {
     @Path("stopAll")
     @Consumes("application/json")
     @Produces("application/json")
-    public EntityInvoice stopAll(EntityInvoice entity) {
-
-        entity.setStopAll(true);
-        entity = new RestRegisterHelper<EntityInvoice>(registerClient){
+    public EntityInvoice stopAll(Object entity) {
+        EntityInvoice resultEntity;
+        resultEntity = new RestRegisterHelper<EntityInvoice>(registerClient, EntityInvoice.class){
             @Override
             public EntityInvoice run(EntityInvoice entity) {
-                ((EntityInvoice)entity).getData().getDynamicField().put("TVA_INTRACOM",10.5);
+                entity.setStopAll(true);
+                ((EntityInvoice)entity).getData().setTvaIntraCom("10.5");
                 return entity;
             }
         }.execute(entity);
-        return entity;
+        return resultEntity;
     }
 
     /**
@@ -76,16 +77,17 @@ public class RestController {
     @Path("stopChildren")
     @Consumes("application/json")
     @Produces("application/json")
-    public EntityInvoice stopChildren(EntityInvoice entity) {
-        entity.setStopChildren(true);
-        entity = new RestRegisterHelper<EntityInvoice>(registerClient){
+    public EntityInvoice stopChildren(Object entity) {
+        EntityInvoice resultEntity;
+        resultEntity = new RestRegisterHelper<EntityInvoice>(registerClient, EntityInvoice.class){
             @Override
             public EntityInvoice run(EntityInvoice entity) {
-                ((EntityInvoice)entity).getData().getDynamicField().put("TVA_INTRACOM",10.5);
+                entity.setStopChildren(true);
+                ((EntityInvoice)entity).getData().setTvaIntraCom("10.5");
                 return entity;
             }
         }.execute(entity);
-        return entity;
+        return resultEntity;
     }
 
 
@@ -98,13 +100,14 @@ public class RestController {
     @Path("errorOnChild")
     @Consumes("application/json")
     @Produces("application/json")
-    public EntityInvoice errorOnChild(EntityInvoice entity) {
-        entity = new RestRegisterHelper<EntityInvoice>(registerClient){
+    public EntityInvoice errorOnChild(Object entity) {
+        EntityInvoice resultEntity;
+        resultEntity  = new RestRegisterHelper<EntityInvoice>(registerClient, EntityInvoice.class){
             @Override
             public EntityInvoice run(EntityInvoice entity) {
                 throw new NullPointerException();
             }
         }.execute(entity);
-        return entity;
+        return resultEntity;
     }
 }

@@ -27,6 +27,7 @@ public class WorldRestController {
 
     /**
      * Test children  inheritance service
+     *
      * @param entity
      * @return
      */
@@ -34,19 +35,21 @@ public class WorldRestController {
     @Path("validate")
     @Consumes("application/json")
     @Produces("application/json")
-    public EntityInvoice validate(EntityInvoice entity) {
-        entity = new RestRegisterHelper<EntityInvoice>(registerClient){
+    public EntityInvoice validate(Object entity) {
+        EntityInvoice resultEntity;
+        resultEntity = new RestRegisterHelper<EntityInvoice>(registerClient, EntityInvoice.class) {
             @Override
             public EntityInvoice run(EntityInvoice entity) {
-                ((EntityInvoice)entity).getData().getDynamicField().put("WWW","www.invoice.com");
+                ((EntityInvoice) entity).getData().setWww("www.invoice.com");
                 return entity;
             }
         }.execute(entity);
-        return entity;
+        return resultEntity;
     }
 
     /**
      * Test children  inheritance service with stop on first child
+     *
      * @param entity
      * @return
      */
@@ -54,19 +57,21 @@ public class WorldRestController {
     @Path("stopAll")
     @Consumes("application/json")
     @Produces("application/json")
-    public EntityInvoice stopAll(EntityInvoice entity) {
-        entity = new RestRegisterHelper<EntityInvoice>(registerClient){
+    public EntityInvoice stopAll(Object entity) {
+        EntityInvoice resultEntity;
+        resultEntity = new RestRegisterHelper<EntityInvoice>(registerClient, EntityInvoice.class) {
             @Override
             public EntityInvoice run(EntityInvoice entity) {
-                ((EntityInvoice)entity).getData().getDynamicField().put("WWW","www.invoice.com");
+                ((EntityInvoice) entity).getData().setWww("www.invoice.com");
                 return entity;
             }
         }.execute(entity);
-        return entity;
+        return resultEntity;
     }
 
     /**
      * Test children  inheritance service with stop all on first child
+     *
      * @param entity
      * @return
      */
@@ -74,19 +79,22 @@ public class WorldRestController {
     @Path("stopChildren")
     @Consumes("application/json")
     @Produces("application/json")
-    public EntityInvoice stopChildren(EntityInvoice entity) {
-        entity = new RestRegisterHelper<EntityInvoice>(registerClient){
+    public EntityInvoice stopChildren(Object entity) {
+        EntityInvoice resultEntity;
+        resultEntity = new RestRegisterHelper<EntityInvoice>(registerClient, EntityInvoice.class) {
             @Override
             public EntityInvoice run(EntityInvoice entity) {
-                ((EntityInvoice)entity).getData().getDynamicField().put("WWW","www.invoice.com");
+                ((EntityInvoice) entity).getData().setWww("www.invoice.com");
+
                 return entity;
             }
         }.execute(entity);
-        return entity;
+        return resultEntity;
     }
 
     /**
      * Test children  inheritance service with error on first child
+     *
      * @param entity
      * @return
      */
@@ -94,15 +102,17 @@ public class WorldRestController {
     @Path("errorOnChild")
     @Consumes("application/json")
     @Produces("application/json")
-    public EntityInvoice errorOnChild(EntityInvoice entity) {
-        entity = new RestRegisterHelper<EntityInvoice>(registerClient){
+    public EntityInvoice errorOnChild(Object entity) {
+        EntityInvoice resultEntity;
+        resultEntity = new RestRegisterHelper<EntityInvoice>(registerClient, EntityInvoice.class) {
             @Override
             public EntityInvoice run(EntityInvoice entity) {
-                ((EntityInvoice)entity).getData().getDynamicField().put("WWW","www.invoice.com");
+                ((EntityInvoice) entity).getData().setWww("www.invoice.com");
+
                 return entity;
             }
         }.execute(entity);
-        return entity;
+        return resultEntity;
     }
 }
 
