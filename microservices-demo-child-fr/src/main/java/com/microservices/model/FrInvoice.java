@@ -9,7 +9,7 @@ public class FrInvoice extends DynamicFields {
     private Double tvaFr;
     private Header header;
 
-    public FrInvoice(){
+    public FrInvoice() {
 
     }
 

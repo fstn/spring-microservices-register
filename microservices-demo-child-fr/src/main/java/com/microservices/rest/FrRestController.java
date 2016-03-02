@@ -1,7 +1,8 @@
 package com.microservices.rest;
 
 import com.microservices.RegisterClient;
-import com.microservices.RestRegisterHelper;
+
+import com.microservices.helper.RestHelper;
 import com.microservices.model.FrEntityInvoice;
 import com.microservices.model.Header;
 import org.slf4j.Logger;
@@ -26,8 +27,10 @@ public class FrRestController {
 
     @Inject
     RegisterClient<FrEntityInvoice> registerClient;
+
     /**
      * Test children  inheritance service
+     *
      * @param entity
      * @return
      */
@@ -38,12 +41,12 @@ public class FrRestController {
     public FrEntityInvoice validate(Object entity) {
         FrEntityInvoice resultEntity = null;
         LOGGER.info(String.format("Input entity is [%s]", entity));
-        resultEntity = new RestRegisterHelper<FrEntityInvoice>(registerClient, FrEntityInvoice.class){
+        resultEntity = new RestHelper<FrEntityInvoice>(registerClient, FrEntityInvoice.class) {
             @Override
             public FrEntityInvoice run(FrEntityInvoice entity) {
-                ((FrEntityInvoice)entity).getData().setTvaFr(10.5);
+                ((FrEntityInvoice) entity).getData().setTvaFr(10.5);
                 Header header = ((FrEntityInvoice) entity).getData().getHeader();
-                if(header == null){
+                if (header == null) {
                     header = new Header();
                 }
                 header.setClientId("10001");
@@ -59,6 +62,7 @@ public class FrRestController {
 
     /**
      * Test children  inheritance service with stop on first child
+     *
      * @param entity
      * @return
      */
@@ -68,11 +72,11 @@ public class FrRestController {
     @Produces("application/json")
     public FrEntityInvoice stopAll(Object entity) {
         FrEntityInvoice resultEntity;
-        resultEntity = new RestRegisterHelper<FrEntityInvoice>(registerClient, FrEntityInvoice.class){
+        resultEntity = new RestHelper<FrEntityInvoice>(registerClient, FrEntityInvoice.class) {
             @Override
             public FrEntityInvoice run(FrEntityInvoice entity) {
                 this.stopAll(entity);
-                ((FrEntityInvoice)entity).getData().setTvaFr(10.5);
+                ((FrEntityInvoice) entity).getData().setTvaFr(10.5);
                 return entity;
             }
         }.execute(entity);
@@ -81,6 +85,7 @@ public class FrRestController {
 
     /**
      * Test children  inheritance service with stop all on first child
+     *
      * @param entity
      * @return
      */
@@ -91,11 +96,11 @@ public class FrRestController {
     public FrEntityInvoice stopChildren(Object entity) {
         FrEntityInvoice resultEntity;
 
-        resultEntity = new RestRegisterHelper<FrEntityInvoice>(registerClient, FrEntityInvoice.class){
+        resultEntity = new RestHelper<FrEntityInvoice>(registerClient, FrEntityInvoice.class) {
             @Override
             public FrEntityInvoice run(FrEntityInvoice entity) {
                 this.stopChildren(entity);
-                ((FrEntityInvoice)entity).getData().setTvaFr(10.5);
+                ((FrEntityInvoice) entity).getData().setTvaFr(10.5);
                 return entity;
             }
         }.execute(entity);
