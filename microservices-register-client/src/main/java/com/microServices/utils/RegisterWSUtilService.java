@@ -1,6 +1,6 @@
 package com.microservices.utils;
 
-import com.microservices.model.App;
+import com.microservices.model.application.Application;
 import com.microservices.model.Register;
 import com.microservices.producer.AppProducer;
 import com.microservices.producer.RegisterProducer;
@@ -22,6 +22,7 @@ import javax.ws.rs.core.Response;
 @Named
 @Singleton
 public class RegisterWSUtilService {
+    private static final Logger logger = LoggerFactory.getLogger(RegisterWSUtilService.class);
 
     @Inject
     AppProducer appProducer;
@@ -29,20 +30,19 @@ public class RegisterWSUtilService {
     @Inject
     RegisterProducer registerProducer;
 
-    private App currentApp;
+    private Application currentApp;
     private Register register;
 
-    private static final Logger logger = LoggerFactory.getLogger(RegisterWSUtilService.class);
-
+    public RegisterWSUtilService() {
+    }
 
     @PostConstruct
     public void init(){
+        logger.debug("RegisterWSUtilService:init");
         currentApp = appProducer.get();
         register = registerProducer.get();
     }
 
-    public RegisterWSUtilService() {
-    }
 
     public Response callUnregisterWS() {
 
@@ -51,7 +51,7 @@ public class RegisterWSUtilService {
                 + register.getPort() );
         target = target.path("/apps/" + currentApp.getId());
 
-        logger.info(target.getUri().toString());
+        logger.debug("RegisterWSUtilService:callUnregisterWS:"+target.getUri().toString());
         Invocation.Builder builder = target.request(MediaType.APPLICATION_JSON_TYPE);
 
         return builder.delete();
@@ -64,7 +64,7 @@ public class RegisterWSUtilService {
                 + register.getPort() );
         target = target.path( "/apps/" + currentApp.getId() + "/" + currentApp.getInstanceId() + "/children");
 
-        logger.info(target.getUri().toString());
+        logger.debug("RegisterWSUtilService:callChildrenWS:"+target.getUri().toString());
         Invocation.Builder builder = target.request(MediaType.APPLICATION_JSON_TYPE);
 
         return builder.get(type);

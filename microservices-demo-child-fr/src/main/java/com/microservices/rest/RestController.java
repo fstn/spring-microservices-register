@@ -1,7 +1,7 @@
 package com.microservices.rest;
 
 import com.microservices.RegisterClient;
-import com.microservices.RestRegisterHelper;
+import com.microservices.helper.RestHelper;
 import com.microservices.model.EntityInvoice;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,7 +34,7 @@ public class RestController {
     @Consumes("application/json")
     @Produces("application/json")
     public EntityInvoice validate(EntityInvoice entity) {
-        entity = new RestRegisterHelper<EntityInvoice>(registerClient, EntityInvoice.class){
+        entity = new RestHelper<EntityInvoice>(registerClient, EntityInvoice.class){
             @Override
             public EntityInvoice run(EntityInvoice entity) {
                 ((EntityInvoice)entity).getData().getDynamicField().put("TVA_FR",10.5);
@@ -54,7 +54,7 @@ public class RestController {
     @Consumes("application/json")
     @Produces("application/json")
     public EntityInvoice stopAll(EntityInvoice entity) {
-        entity = new RestRegisterHelper<EntityInvoice>(registerClient, EntityInvoice.class){
+        entity = new RestHelper<EntityInvoice>(registerClient, EntityInvoice.class){
             @Override
             public EntityInvoice run(EntityInvoice entity) {
                 this.stopAll(entity);
@@ -75,7 +75,7 @@ public class RestController {
     @Consumes("application/json")
     @Produces("application/json")
     public EntityInvoice stopChildren(EntityInvoice entity) {
-        entity = new RestRegisterHelper<EntityInvoice>(registerClient, EntityInvoice.class){
+        entity = new RestHelper<EntityInvoice>(registerClient, EntityInvoice.class){
             @Override
             public EntityInvoice run(EntityInvoice entity) {
                 this.stopChildren(entity);

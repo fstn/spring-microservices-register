@@ -2,10 +2,10 @@ package com.microservices;
 
 import com.microservices.cron.DirectoryCleaner;
 import com.microservices.facade.DirectoryFacade;
-import com.microservices.model.App;
+import com.microservices.model.application.Application;
 import com.microservices.model.Config;
 import com.microservices.model.Directory;
-import com.microservices.model.EndPoint;
+import com.microservices.model.application.EndPoint;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -40,7 +40,7 @@ public class MicroServiceRegisterApplicationTests {
 
 
     @Inject
-    App parentApp;
+    Application parentApp;
 
     @Mock
     Config config;
@@ -48,7 +48,7 @@ public class MicroServiceRegisterApplicationTests {
     @Inject
     @InjectMocks
     DirectoryCleaner directoryCleaner;
-    private App childApp;
+    private Application childApp;
 
     @Before
     public void setUp() throws Exception {
@@ -56,7 +56,7 @@ public class MicroServiceRegisterApplicationTests {
         // remove appTTL to test cleaning
         when(config.getAppTTL()).thenReturn(10);
 
-        childApp = new App();
+        childApp = new Application();
         childApp.setPath("/eu/rest");
         childApp.setId("eu");
         childApp.setHostName("127.0.0.1");
@@ -78,7 +78,7 @@ public class MicroServiceRegisterApplicationTests {
     public void registerApp() throws InterruptedException {
         directory.setRegisteredApp(new ArrayList<>());
         directoryFacade.register(parentApp);
-        List<App> registerApps = directory.getRegisteredApps();
+        List<Application> registerApps = directory.getRegisteredApps();
         assertEquals("There is one registered parentApp", 1, registerApps.size());
         assertEquals("My parentApp is registered", parentApp.getId(), registerApps.get(0).getId());
         Date oldLastUpdate = registerApps.get(0).getLastUpdate();
@@ -97,7 +97,7 @@ public class MicroServiceRegisterApplicationTests {
     public void findById() throws InterruptedException {
         directory.setRegisteredApp(new ArrayList<>());
         registerApp();
-        Optional<App> registeredApp = directoryFacade.findRegisteredById(parentApp.getId());
+        Optional<Application> registeredApp = directoryFacade.findRegisteredById(parentApp.getId());
         assertTrue("Found a registered parentApp", registeredApp.isPresent());
         assertEquals("My parentApp is registered", parentApp.getId(), registeredApp.get().getId());
 
@@ -109,7 +109,7 @@ public class MicroServiceRegisterApplicationTests {
         registerApp();
         Thread.sleep(100);
         directoryCleaner.clean();
-        List<App> registerApps = directory.getRegisteredApps();
+        List<Application> registerApps = directory.getRegisteredApps();
         assertEquals("Clean must remove my parentApp", 0, registerApps.size());
     }
 
@@ -118,7 +118,7 @@ public class MicroServiceRegisterApplicationTests {
         directory.setRegisteredApp(new ArrayList<>());
         registerApp();
         directoryCleaner.clean();
-        List<App> registerApps = directory.getRegisteredApps();
+        List<Application> registerApps = directory.getRegisteredApps();
         assertEquals("Clean must not remove my parentApp", 1, registerApps.size());
     }
 
@@ -127,7 +127,7 @@ public class MicroServiceRegisterApplicationTests {
         directory.setRegisteredApp(new ArrayList<>());
         directoryFacade.register(parentApp);
         directoryFacade.register(childApp);
-        List<App> registeredChildren = directoryFacade.findRegisteredChildrenById(parentApp.getId());
+        List<Application> registeredChildren = directoryFacade.findRegisteredChildrenById(parentApp.getId());
         assertEquals("There is one registered childApp", 1, registeredChildren.size());
         assertEquals("My childApp is a child", childApp.getId(), registeredChildren.get(0).getId());
     }
@@ -135,7 +135,7 @@ public class MicroServiceRegisterApplicationTests {
     @Test
     public void appChildrenPrioritySort() {
 
-        App childApp2 = new App();
+        Application childApp2 = new Application();
         childApp2.setPath("/us/rest");
         childApp2.setId("usa");
         childApp2.setHostName("127.0.0.1");
@@ -147,7 +147,7 @@ public class MicroServiceRegisterApplicationTests {
         childApp2.setEndPoints(endPoints);
         childApp2.setParentApp(parentApp.getId());
         directoryFacade.register(childApp2);
-        List<App> registeredChildren = directoryFacade.findRegisteredChildrenById(parentApp.getId());
+        List<Application> registeredChildren = directoryFacade.findRegisteredChildrenById(parentApp.getId());
         assertEquals("There is one registered childApp", 1, registeredChildren.size());
         assertEquals("My childApp is  childApp2 because priority is bigger", childApp2.getId(), registeredChildren.get(0).getId());
     }

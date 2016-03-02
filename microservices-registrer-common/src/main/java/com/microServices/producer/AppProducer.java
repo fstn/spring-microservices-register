@@ -1,7 +1,7 @@
 package com.microservices.producer;
 
-import com.microservices.model.App;
-import com.microservices.model.EndPoint;
+import com.microservices.model.application.Application;
+import com.microservices.model.application.EndPoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,7 +22,7 @@ public class AppProducer {
 
     private static final Logger logger = LoggerFactory.getLogger(AppProducer.class);
 
-    private App app;
+    private Application app;
 
     @PostConstruct
     public void init() {
@@ -33,7 +33,7 @@ public class AppProducer {
             InputStream is = this.getClass().getClassLoader().getResourceAsStream("application.properties");
             if (is != null) {
                 properties.load(is);
-                app = new App();
+                app = new Application();
                 String propertieValue = properties.getProperty("app.id");
                 if (propertieValue != null)
                     app.setId(propertieValue);
@@ -101,7 +101,7 @@ public class AppProducer {
 
 
     @Produces
-    public App get() {
+    public Application get() {
         return app;
     }
 }

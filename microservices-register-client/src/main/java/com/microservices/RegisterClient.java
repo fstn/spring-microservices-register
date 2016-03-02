@@ -1,6 +1,9 @@
 package com.microservices;
 
 import com.microservices.model.*;
+import com.microservices.model.application.Application;
+import com.microservices.model.application.EndPoint;
+import com.microservices.model.stackTrace.StackTraceWSElement;
 import com.microservices.producer.AppProducer;
 import com.microservices.producer.ConfigProducer;
 import com.microservices.utils.RegisterUtilService;
@@ -12,14 +15,13 @@ import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
-import javax.ws.rs.*;
-import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
 /**
  * Created by stephen on 27/02/2016.
+ * Client helper to use register service
  */
 @Named
 @Singleton
@@ -35,21 +37,24 @@ public class RegisterClient<T> {
     @Inject
     AppProducer appProducer;
 
-
-    private App app;
+    private Application currentApp;
     private Config config;
     /**
      * Children list
      */
-    private List<App> childrenApp;
+    private List<Application> childrenApp;
 
+    /**
+     * Call on startup
+     */
     @PostConstruct
     public void init() {
-        app = appProducer.get();
+        logger.debug("RegisterClient:init");
+        currentApp = appProducer.get();
         config = configProducer.get();
         //test configuration file
-        configurationTester.testAppConfiguration(app);
-        configurationTester.testConfigConfiguration(config);
+        configurationTester.checkApplicationConfiguration(currentApp);
+        configurationTester.checkConfigConfiguration(config);
         registerUtil.register();
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
@@ -60,8 +65,12 @@ public class RegisterClient<T> {
         }, 0, config.getReloadChildrenDelay());
     }
 
+    /**
+     * Never call with spring implementation
+     */
     @PreDestroy
     public void destroy() {
+        logger.debug("RegisterClient:destroy");
         registerUtil.unregister();
     }
 
@@ -73,39 +82,16 @@ public class RegisterClient<T> {
      * @return
      */
     public Entity addStackCall(Entity entity, EndPoint endPoint) {
-        entity.getStackTrace().add(new StackTraceWSElement(app, endPoint));
+        logger.debug("RegisterClient:addStackCall");
+        entity.getStackTrace().add(new StackTraceWSElement(currentApp, endPoint));
         return entity;
     }
 
-    /**
-     * Return endPoint that match with method
-     *
-     * @param localClass
-     * @return
-     */
-    public EndPoint getEndPoint(Class localClass) {
-        Method m = localClass.getEnclosingMethod();
-        String path = m.getAnnotationsByType(Path.class)[0].value();
-        String method = null;
-        if (m.isAnnotationPresent(POST.class)) {
-            method = HttpMethod.POST;
-        } else if (m.isAnnotationPresent(GET.class)) {
-            method = HttpMethod.GET;
-        } else if (m.isAnnotationPresent(PUT.class)) {
-            method = HttpMethod.PUT;
-        } else if (m.isAnnotationPresent(DELETE.class)) {
-            method = HttpMethod.DELETE;
-        }
-        EndPoint endPoint = new EndPoint(path, method);
-        return endPoint;
-    }
-
-
-    public List<App> getChildrenApp() {
+    public List<Application> getChildrenApp() {
         return childrenApp;
     }
 
-    public void setChildrenApp(List<App> childrenApp) {
+    public void setChildrenApp(List<Application> childrenApp) {
         this.childrenApp = childrenApp;
     }
 
@@ -117,11 +103,11 @@ public class RegisterClient<T> {
         this.registerUtil = registerUtil;
     }
 
-    public App getApp() {
-        return app;
+    public Application getCurrentApp() {
+        return currentApp;
     }
 
-    public void setApp(App app) {
-        this.app = app;
+    public void setCurrentApp(Application currentApp) {
+        this.currentApp = currentApp;
     }
 }

@@ -1,7 +1,7 @@
 package com.microservices.rest;
 
 import com.microservices.RegisterClient;
-import com.microservices.RestRegisterHelper;
+import com.microservices.helper.RestHelper;
 import com.microservices.model.EntityInvoice;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,7 +37,7 @@ public class WorldRestController {
     @Produces("application/json")
     public EntityInvoice validate(Object entity) {
         EntityInvoice resultEntity;
-        resultEntity = new RestRegisterHelper<EntityInvoice>(registerClient, EntityInvoice.class) {
+        resultEntity = new RestHelper<EntityInvoice>(registerClient, EntityInvoice.class) {
             @Override
             public EntityInvoice run(EntityInvoice entity) {
                 ((EntityInvoice) entity).getData().setWww("www.invoice.com");
@@ -59,7 +59,7 @@ public class WorldRestController {
     @Produces("application/json")
     public EntityInvoice stopAll(Object entity) {
         EntityInvoice resultEntity;
-        resultEntity = new RestRegisterHelper<EntityInvoice>(registerClient, EntityInvoice.class) {
+        resultEntity = new RestHelper<EntityInvoice>(registerClient, EntityInvoice.class) {
             @Override
             public EntityInvoice run(EntityInvoice entity) {
                 ((EntityInvoice) entity).getData().setWww("www.invoice.com");
@@ -81,7 +81,7 @@ public class WorldRestController {
     @Produces("application/json")
     public EntityInvoice stopChildren(Object entity) {
         EntityInvoice resultEntity;
-        resultEntity = new RestRegisterHelper<EntityInvoice>(registerClient, EntityInvoice.class) {
+        resultEntity = new RestHelper<EntityInvoice>(registerClient, EntityInvoice.class) {
             @Override
             public EntityInvoice run(EntityInvoice entity) {
                 ((EntityInvoice) entity).getData().setWww("www.invoice.com");
@@ -104,7 +104,7 @@ public class WorldRestController {
     @Produces("application/json")
     public EntityInvoice errorOnChild(Object entity) {
         EntityInvoice resultEntity;
-        resultEntity = new RestRegisterHelper<EntityInvoice>(registerClient, EntityInvoice.class) {
+        resultEntity = new RestHelper<EntityInvoice>(registerClient, EntityInvoice.class) {
             @Override
             public EntityInvoice run(EntityInvoice entity) {
                 ((EntityInvoice) entity).getData().setWww("www.invoice.com");
