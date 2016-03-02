@@ -1,13 +1,14 @@
 package com.microservices.model;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
+
+import javax.inject.Named;
 
 /**
  * Created by stephen on 28/02/2016.
  * Register config class
  */
-@Component
+@Named
 @ConfigurationProperties(prefix = "config")
 public class Config {
 

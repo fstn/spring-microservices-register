@@ -4,15 +4,15 @@ package com.microservices;
 import com.microservices.utils.Preconditions;
 import com.microservices.model.App;
 import com.microservices.model.Register;
-import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 /**
  * Configuration Tester
  * Verify content of application.yml file
  */
-@Component
+@Named
 public class ConfigurationTester {
 
     @Inject

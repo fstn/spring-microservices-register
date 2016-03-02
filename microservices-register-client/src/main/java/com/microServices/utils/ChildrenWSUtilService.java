@@ -3,8 +3,8 @@ package com.microservices.utils;
 import com.microservices.model.App;
 import com.microservices.model.EndPoint;
 import org.glassfish.jersey.jackson.JacksonFeature;
-import org.springframework.stereotype.Component;
 
+import javax.inject.Named;
 import javax.inject.Singleton;
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.client.*;
@@ -13,7 +13,7 @@ import javax.ws.rs.core.MediaType;
 /**
  * Created by stephen on 27/02/2016.
  */
-@Component
+@Named
 @Singleton
 public class ChildrenWSUtilService<T> {
     /**

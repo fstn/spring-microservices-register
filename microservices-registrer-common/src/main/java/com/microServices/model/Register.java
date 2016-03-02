@@ -1,13 +1,14 @@
 package com.microservices.model;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
+
+import javax.inject.Named;
 
 /**
  * Created by stephen on 27/02/2016.
  */
 
-@Component
+@Named
 @ConfigurationProperties(locations = "classpath:register.yml",prefix = "register")
 public class Register {
     /**

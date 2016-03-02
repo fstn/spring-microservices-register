@@ -2,9 +2,10 @@ package com.microservices.facade;
 
 import com.microservices.model.App;
 import com.microservices.model.Directory;
-import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -15,7 +16,8 @@ import java.util.stream.Collectors;
  * Created by stephen on 27/02/2016.
  * Facade that provide a way to manage directory
  */
-@Component
+@Named
+@Singleton
 public class DirectoryFacade {
 
     @Inject

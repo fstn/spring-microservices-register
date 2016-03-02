@@ -4,29 +4,28 @@ import com.microservices.model.*;
 import com.microservices.utils.RegisterUtilService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Singleton;
 import javax.ws.rs.*;
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by stephen on 27/02/2016.
  */
-@Component
+@Named
 @Singleton
-@EnableScheduling
 public class RegisterClient<T> {
 
     private static final Logger logger = LoggerFactory.getLogger(RegisterClient.class);
     @Inject
-    ConfigurationTester configurationTester;
+    com.microservices.ConfigurationTester configurationTester;
     @Inject
     RegisterUtilService<T> registerUtil;
     @Inject
@@ -43,7 +42,13 @@ public class RegisterClient<T> {
         //test configuration file
             configurationTester.testConfiguration();
             registerUtil.register();
-            getChildren();
+            Timer timer = new Timer();
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    childrenApp = registerUtil.getChildren();
+                }
+            }, 0, 5000);
     }
 
     @PreDestroy
@@ -51,10 +56,6 @@ public class RegisterClient<T> {
         registerUtil.unregister();
     }
 
-    @Scheduled(fixedDelayString  = "${config.heartBeatDelay}")
-    public void getChildren() {
-            childrenApp = registerUtil.getChildren();
-    }
     /**
      * Add StackCall inside entity
      * @param entity

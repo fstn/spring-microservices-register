@@ -2,12 +2,13 @@ package com.microservices;
 
 import com.microservices.rest.WorldRestController;
 import org.glassfish.jersey.server.ResourceConfig;
-import org.springframework.stereotype.Component;
+
+import javax.inject.Named;
 
 /**
  * Created by SZA on 26/02/2016.
  */
-@Component
+@Named
 public class JerseyConfig extends ResourceConfig {
     public JerseyConfig() {
         registerEndpoints();

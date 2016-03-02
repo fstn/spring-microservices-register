@@ -6,15 +6,15 @@ import com.microservices.model.AppDTO;
 import com.microservices.model.AppListDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.ws.rs.*;
 
 /**
  * Created by SZA on 26/02/2016.
  */
-@Component
+@Named
 @Path("/apps")
 public class RegisterController {
 

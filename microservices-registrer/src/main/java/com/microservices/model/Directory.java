@@ -1,8 +1,8 @@
 package com.microservices.model;
 
-import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import javax.inject.Named;
 import javax.inject.Singleton;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +12,7 @@ import java.util.List;
  * Directory that keep all registered app
  */
 @Singleton
-@Component
+@Named
 public class Directory {
     private List<App> registeredApp;
 

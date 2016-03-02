@@ -7,16 +7,16 @@ import com.microservices.model.EndPoint;
 import com.microservices.model.Register;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.ws.rs.core.Response;
 import java.util.List;
 
 /**
  * Created by stephen on 27/02/2016.
  */
-@Component
+@Named
 public class RegisterUtilService<T> {
     private static final Logger logger = LoggerFactory.getLogger(RegisterUtilService.class);
 

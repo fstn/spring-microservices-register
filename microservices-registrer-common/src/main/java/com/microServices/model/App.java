@@ -1,8 +1,8 @@
 package com.microservices.model;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
 
+import javax.inject.Named;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.ArrayList;
 import java.util.Date;
@@ -11,7 +11,7 @@ import java.util.Date;
  * App representation yml
  */
 
-@Component
+@Named
 @ConfigurationProperties(locations = "classpath:register.yml", prefix = "app")
 @XmlRootElement
 public class App {

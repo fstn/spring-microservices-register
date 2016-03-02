@@ -5,9 +5,9 @@ import com.microservices.RestRegisterHelper;
 import com.microservices.model.EntityInvoice;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -17,7 +17,7 @@ import javax.ws.rs.Produces;
  * Created by stephen on 27/02/2016.
  */
 
-@Component
+@Named
 @Path("/")
 public class WorldRestController {
     private static final Logger logger = LoggerFactory.getLogger(WorldRestController.class);

@@ -79,7 +79,7 @@ public class MicroServicesEuTests {
 
         // mock execute client call
 
-        when(registerUtilService.getChildren()).thenReturn(new AppListDTO(childrenApps));
+        when(registerUtilService.getChildren()).thenReturn(childrenApps);
         when(childrenWSUtilService.executeOnChildrenWS(any(), any(), any())).thenReturn(invoiceEntity);
     }
 
