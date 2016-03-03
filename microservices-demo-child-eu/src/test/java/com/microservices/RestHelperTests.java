@@ -1,7 +1,9 @@
 package com.microservices;
 
 import com.microservices.helper.RestHelper;
-import com.microservices.model.*;
+import com.microservices.model.EntityInvoice;
+import com.microservices.model.Invoice;
+import com.microservices.model.Register;
 import com.microservices.model.application.Application;
 import com.microservices.model.application.EndPoint;
 import com.microservices.utils.ChildrenWSUtilService;
@@ -11,7 +13,6 @@ import org.apache.catalina.WebResource;
 import org.glassfish.jersey.client.ClientResponse;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -97,8 +98,7 @@ public class RestHelperTests {
      * Test stop flag inside service
      */
 
-    @Ignore
-    //TODO re-enable this
+
     @Test
     @POST
     @Path("validate")

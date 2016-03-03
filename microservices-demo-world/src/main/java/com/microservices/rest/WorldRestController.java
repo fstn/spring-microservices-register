@@ -46,6 +46,7 @@ public class WorldRestController {
                 return entity;
             }
         }.execute(entity);
+        LOGGER.info(String.format("Output entity is [%s]", resultEntity));
         return resultEntity;
     }
 

@@ -12,6 +12,7 @@ public class EndPoint {
 
     /**
      * EndPoint path
+     *
      * @exemple /invoice
      * ignore / at begin and end
      */
@@ -31,6 +32,7 @@ public class EndPoint {
         setPath(path);
         this.method = method;
     }
+
     public String getMethod() {
         return method;
     }
@@ -44,8 +46,10 @@ public class EndPoint {
     }
 
     public void setPath(String path) {
-        path = path.startsWith("/") ? path.substring(1) : path;
-        path = path.endsWith("/") ? path.substring(path.length()-1) : path;
+        if (path != null) {
+            path = path.startsWith("/") ? path.substring(1) : path;
+            path = path.endsWith("/") ? path.substring(path.length() - 1) : path;
+        }
         this.path = path;
     }
 
