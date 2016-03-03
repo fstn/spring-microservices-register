@@ -1,0 +1,76 @@
+<div ng-controller="MainController" class="full-height">
+    <it-side-menus>
+        <it-side-menu-header it-hide-button-menu="true">
+            <!-- Header Logo -->
+            <div class="navbar-header">
+                <a class="navbar-brand">MicroServices Viewer</a>
+            </div>
+
+            <!-- Header Menu-->
+            <div class="collapse navbar-collapse">
+                <div dropdown class="nav navbar-nav navbar-right white">
+                    <button class="btn white loginButton" type="button" dropdown-toggle>
+                        <i class="glyphicon glyphicon-user white">&nbsp;{{$root.user}}&nbsp;</i><span
+                            class="caret white"></span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu">
+                        <li>
+                            <a ng-click="changeLanguage('fr_FR')" ng-cloak>
+                                {{'GLOBAL.FRENCH_MENUITEM' | translate}}
+                                <i class="pull-right glyphicon"
+                                   ng-class="{'glyphicon-ok':currentLanguage == 'fr_FR', '':currentLanguage !== 'fr_FR'}">
+                                </i>
+                            </a>
+                        </li>
+                        <li>
+                            <a ng-click="changeLanguage('en_GB')" ng-cloak>
+                                {{'GLOBAL.ENGLISH_MENUITEM' | translate}}
+                                <i class="pull-right glyphicon"
+                                   ng-class="{'glyphicon-ok':currentLanguage == 'en_GB', '':currentLanguage !== 'en_GB'}">
+                                </i>
+                            </a>
+                        </li>
+                        <li>
+                            <a ng-click="changeLanguage('de_DE')" ng-cloak>
+                                {{'GLOBAL.GERMAN_MENUITEM' | translate}}
+                                <i class="pull-right glyphicon"
+                                   ng-class="{'glyphicon-ok':currentLanguage == 'de_DE', '':currentLanguage !== 'de_DE'}">
+                                </i>
+                            </a>
+                        </li>
+                        <li class="divider" ng-show="$root.user"></li>
+                        <li ng-show="$root.user">
+                            <a ng-click="authService.logout()" ng-cloak>
+                                {{'GLOBAL.LOGOUT_MENUITEM' | translate}}
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </it-side-menu-header>
+        <it-side-menu>
+            <!-- Side Menu -->
+            <ul it-nav-active="active"  class="nav navbar-nav nav-pills nav-stacked list-group">
+            </ul>
+        </it-side-menu>
+        <it-side-menu-content>
+            <!-- WebApp Content -->
+
+            <!-- Login view -->
+            <div ng-if="!$root.user" ng-include="'app/features/login/loginView.html'"></div>
+
+            <!-- View container -->
+            <div ng-if="$root.user" class="container-fluid">
+                <!-- View title -->
+                <div class="row" ng-show="$root.pageTitle && $root.pageTitle.length > 0">
+                    <div class="it-view-header col-md-12">
+                        <h3>{{$root.pageTitle | translate}}</h3>
+                        <hr/>
+                    </div>
+                </div>
+                <!-- View content -->
+                <div ng-view class="ng-view-class"></div>
+            </div>
+        </it-side-menu-content>
+    </it-side-menus>
+</div>

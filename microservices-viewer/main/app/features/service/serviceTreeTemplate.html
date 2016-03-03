@@ -1,0 +1,8 @@
+
+    <div ng-class="(treeData.length) ? '' : 'list-group-item active '" ?>
+        <ul tree-dnd-nodes style="min-height: 100px">
+            <li tree-dnd-node="node" ng-repeat="node in treeData track by node.__hashKey__"
+                ng-show="node.__visible__" compile="expandingProperty.cellTemplate"
+                ng-include="'app/features/service/serviceTreeTemplateFetch.html'"></li>
+        </ul>
+    </div>

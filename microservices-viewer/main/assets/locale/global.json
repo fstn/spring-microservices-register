@@ -1,0 +1,17 @@
+{
+  "GLOBAL": {
+    "ENGLISH_MENUITEM": "Anglais",
+    "FRENCH_MENUITEM": "Français",
+    "GERMAN_MENUITEM": "Allemand",
+    "LOGOUT_MENUITEM": "Déconnexion",
+    "YEAR_OF_LABEL": "Année",
+    "LOGIN": {
+      "USER_LABEL": "Nom d'utilisateur",
+      "PASSWORD_LABEL": "Mot de passe",
+      "SUBMIT_BUTTON_LABEL": "Connexion"
+    },
+    "SERVICE":{
+      "TITLE": "Liste des services disponibles"
+    }
+  }
+}
