@@ -1,4 +1,5 @@
-#Microserivce Viewer
+#Microserivces Viewer
+Application wich give representation of all microservices registered 
 
 #Build & Run
 ##Prérequis
