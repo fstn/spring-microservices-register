@@ -45,8 +45,8 @@ Return result:
     @Path("validate")
     @Consumes("application/json")
     @Produces("application/json")
-    public Entity<Invoice> validate(Entity<Invoice> entity) {
-  entity = new RestRegisterHelper<Entity<Invoice>>(registerClient){
+    public Entity<Invoice> validate(Object entity) {
+  entity = new RestHelper<Entity<Invoice>>(registerClient){
             @Override
             public Entity run(Entity<Invoice> entity) {
                 /////////////////////////// DO SOMETHING ///////////////////////////
@@ -62,9 +62,11 @@ Return result:
 
 * Configure register [application](https://github.com/fstn/spring-microservices-register/blob/master/microservices-registrer/src/main/resources/application.properties)
 * SpringBoot run register
-* Configure parent demo (world api) [application](https://github.com/fstn/spring-microservices-register/tree/master/microservices-demo-parent/src/main/resources)
+* Configure parent demo (world api) [application](https://github.com/fstn/spring-microservices-register/tree/master/microservices-demo-world/src/main/resources)
 * SpringBoot run parent
-* Configure child demo (eu api) [application](https://github.com/fstn/spring-microservices-register/tree/master/microservices-demo-child/src/main/resources)
+* Configure child demo (eu api) [application](https://github.com/fstn/spring-microservices-register/tree/master/microservices-demo-child-eu/src/main/resources)
+* SpringBoot run child
+* Configure child demo (fr api) [application](https://github.com/fstn/spring-microservices-register/tree/master/microservices-demo-child-fr/src/main/resources)
 * SpringBoot run child
 * Try calling parent:
 
@@ -89,33 +91,12 @@ POST http://{parent host}:{parent port}/{parent context path}/validate
   "stackTrace": [
     {
       "app": {
-        "app": "world",
+        "id": "world",
         "path": "world/rest",
         "parentApp": "api",
         "hostName": "127.0.0.1",
-        "status": "STARTING",
         "port": 8081,
-        "instanceID": "1",
-        "endPoints": [
-          {
-            "path": "validate",
-            "method": "POST"
-          },
-          {
-            "path": "stopChildren",
-            "method": "POST"
-          },
-          {
-            "path": "stopAll",
-            "method": "POST"
-          },
-          {
-            "path": "errorOnChild",
-            "method": "POST"
-          }
-        ],
-        "lastUpdate": null,
-        "priority": 100
+        "instanceId": "1"
       },
       "endPoint": {
         "path": "validate",
@@ -124,64 +105,26 @@ POST http://{parent host}:{parent port}/{parent context path}/validate
     },
     {
       "app": {
-        "app": "fr",
-        "path": "fr/rest",
-        "parentApp": "eu",
-        "hostName": "127.0.0.1",
-        "status": "STARTING",
-        "port": 8094,
-        "instanceID": "1",
-        "endPoints": [
-          {
-            "path": "validate",
-            "method": "POST"
-          },
-          {
-            "path": "stopChildren",
-            "method": "POST"
-          },
-          {
-            "path": "stopAll",
-            "method": "POST"
-          }
-        ],
-        "lastUpdate": null,
-        "priority": 10
-      },
-      "endPoint": {
-        "path": "validate",
-        "method": "POST"
-      }
-    },
-    {
-      "app": {
-        "app": "eu",
+        "id": "eu",
         "path": "eu/rest",
         "parentApp": "world",
         "hostName": "127.0.0.1",
-        "status": "STARTING",
         "port": 8093,
-        "instanceID": "1",
-        "endPoints": [
-          {
-            "path": "validate",
-            "method": "POST"
-          },
-          {
-            "path": "stopChildren",
-            "method": "POST"
-          },
-          {
-            "path": "stopAll",
-            "method": "POST"
-          },
-          {
-            "path": "errorOnChild",
-            "method": "POST"
-          }
-        ],
-        "lastUpdate": null,
-        "priority": 200
+        "instanceId": "1"
+      },
+      "endPoint": {
+        "path": "validate",
+        "method": "POST"
+      }
+    },
+    {
+      "app": {
+        "id": "fr",
+        "path": "fr/rest",
+        "parentApp": "eu",
+        "hostName": "127.0.0.1",
+        "port": 8094,
+        "instanceId": "1"
       },
       "endPoint": {
         "path": "validate",
@@ -194,11 +137,16 @@ POST http://{parent host}:{parent port}/{parent context path}/validate
     "amount": 1980.52,
     "id": "12",
     "tva": 98.2,
-    "dynamicField": {
-      "WWW": "www.invoice.com",
-      "TVA_FR": 10.5,
-      "TVA_INTRACOM": 10.5
-    }
+    "www": "www.invoice.com",
+    "tvaIntraCom": "10.5",
+    "header": {
+      "euId": "EU145485421",
+      "euCovention": "Europe Convention description",
+      "supplierId": "FR121254",
+      "clientId": "10001",
+      "scandate": 1457035620781
+    },
+    "tvaFr": 10.5
   }
 }
 ```
@@ -219,33 +167,12 @@ Result:
   "stackTrace": [
     {
       "app": {
-        "app": "world",
+        "id": "world",
         "path": "world/rest",
         "parentApp": "api",
         "hostName": "127.0.0.1",
-        "status": "STARTING",
         "port": 8081,
-        "instanceID": "1",
-        "endPoints": [
-          {
-            "path": "validate",
-            "method": "POST"
-          },
-          {
-            "path": "stopChildren",
-            "method": "POST"
-          },
-          {
-            "path": "stopAll",
-            "method": "POST"
-          },
-          {
-            "path": "errorOnChild",
-            "method": "POST"
-          }
-        ],
-        "lastUpdate": null,
-        "priority": 100
+        "instanceId": "1"
       },
       "endPoint": {
         "path": "errorOnChild",
@@ -256,48 +183,25 @@ Result:
   "stackError": [
     {
       "app": {
-        "app": "eu",
+        "id": "eu",
         "path": "eu/rest",
         "parentApp": "world",
         "hostName": "127.0.0.1",
-        "status": "STARTING",
         "port": 8093,
-        "instanceID": "1",
-        "endPoints": [
-          {
-            "path": "validate",
-            "method": "POST"
-          },
-          {
-            "path": "stopChildren",
-            "method": "POST"
-          },
-          {
-            "path": "stopAll",
-            "method": "POST"
-          },
-          {
-            "path": "errorOnChild",
-            "method": "POST"
-          }
-        ],
-        "lastUpdate": 1456849494046,
-        "priority": 200
+        "instanceId": "1"
       },
       "endPoint": {
         "path": "errorOnChild",
         "method": "POST"
       },
-      "exception": "HTTP 500 Internal Server Error"
+      "exception": "javax.ws.rs.InternalServerErrorException: HTTP 500 Internal Server Error HTTP 500 Internal Server Error"
     }
   ],
   "data": {
     "amount": 1980.52,
     "id": "12",
     "tva": 98.2,
-    "dynamicField": {
-      "WWW": "www.invoice.com"
-    }
+    "www": "www.invoice.com"
   }
 }
 ```
@@ -329,68 +233,12 @@ Result:
   "stackTrace": [
     {
       "app": {
-        "app": "world",
+        "id": "world",
         "path": "world/rest",
         "parentApp": "api",
         "hostName": "127.0.0.1",
-        "status": "STARTING",
         "port": 8081,
-        "instanceID": "1",
-        "endPoints": [
-          {
-            "path": "validate",
-            "method": "POST"
-          },
-          {
-            "path": "stopChildren",
-            "method": "POST"
-          },
-          {
-            "path": "stopAll",
-            "method": "POST"
-          },
-          {
-            "path": "errorOnChild",
-            "method": "POST"
-          }
-        ],
-        "lastUpdate": null,
-        "priority": 100
-      },
-      "endPoint": {
-        "path": "stopChildren",
-        "method": "POST"
-      }
-    },
-    {
-      "app": {
-        "app": "eu",
-        "path": "eu/rest",
-        "parentApp": "world",
-        "hostName": "127.0.0.1",
-        "status": "STARTING",
-        "port": 8093,
-        "instanceID": "1",
-        "endPoints": [
-          {
-            "path": "validate",
-            "method": "POST"
-          },
-          {
-            "path": "stopChildren",
-            "method": "POST"
-          },
-          {
-            "path": "stopAll",
-            "method": "POST"
-          },
-          {
-            "path": "errorOnChild",
-            "method": "POST"
-          }
-        ],
-        "lastUpdate": null,
-        "priority": 200
+        "instanceId": "1"
       },
       "endPoint": {
         "path": "stopChildren",
@@ -403,10 +251,7 @@ Result:
     "amount": 1980.52,
     "id": "12",
     "tva": 98.2,
-    "dynamicField": {
-      "WWW": "www.invoice.com",
-      "TVA_INTRACOM": 10.5
-    }
+    "www": "www.invoice.com"
   }
 }
 ```
